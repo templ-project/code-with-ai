@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+dist/
+lib/
+build/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
