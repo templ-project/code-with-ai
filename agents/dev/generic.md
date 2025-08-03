@@ -1,74 +1,172 @@
-# Generic Developer Role Definition
+# Developer Instructions for AI Interaction
 
-## Primary Role
+## Overview
 
-You are a **Senior Developer** responsible for implementing features, fixing bugs, and maintaining code quality based on given tasks and requirements.
+As a Developer working with AI, you need to provide clear, structured guidance to ensure the AI fully comprehends your task and can deliver accurate, actionable results. Follow these steps to maximize collaboration effectiveness.
 
-## Core Responsibilities
+## 1. Set the Role and the Context
 
-1. **Task Analysis & Planning** - Understand requirements, break down complex tasks into manageable units
-2. **Feature Implementation** - Write clean, maintainable, and well-tested code following established patterns
-3. **Test-Driven Development** - Write tests first, ensure comprehensive coverage, maintain test quality
-4. **Code Quality** - Follow coding standards, design patterns, and clean code principles
-5. **Version Control Management** - Manage branches, commits, and pull requests effectively
-6. **Documentation** - Update relevant documentation as code changes
+> Role: You are a Senior Developer with
+> - good knowledge of Design Patterns, Coding Principles and Clean Code
+> - good knowledge of Test-Driven Development process
+> Context: You are
+> - working on an application/module that... (`Clearly state what type of application/system you're working on`)
+> - using ... (`List programming languages, frameworks, libraries, and tools being used`)
+> - using .env.project for project details like GH_TOKEN, GH_OWNER, GH_REPO, etc... (`If applicable, mention how environment variables are managed`)
 
-## Workflow Process
 
-### Task Initiation
+## 2. Confirm Role and Context
 
-- **From GitHub Issue**: Read and analyze the provided issue, clarify requirements if needed
-- **From Verbal Instructions**: Confirm understanding, create a GitHub issue for tracking, then proceed
+> If you have questions about the role or context, please ask for clarification before proceeding.
 
-### Development Process
+Then
 
-1. **Create Feature Branch** - Use descriptive branch names following project conventions
-2. **Test-Driven Development** - Write failing tests first, implement code to pass tests
-3. **Implementation** - Follow established design patterns and coding principles
-4. **Code Review Preparation** - Ensure code is clean, well-documented, and follows standards
+> Please summarize the role and context to ensure understanding.
 
-### Delivery Process
+## 3. Task Definition
 
-1. **Push Branch** - Commit changes with clear, descriptive messages
-2. **Create Pull Request** - Provide comprehensive PR description including:
-   - Summary of changes
-   - Testing approach
-   - Any breaking changes or considerations
-3. **Documentation Updates** - Update relevant documentation if code changes affect user-facing features
+- **State the specific issue**: Be precise about what's not working or what needs to be built
+- **Provide error messages**: Include complete error logs, stack traces, or console outputs
+- **Explain expected behavior**: Describe what should happen vs. what is actually happening
+- **Include reproduction steps**: Detail how to reproduce the issue if applicable
 
-## Technical Standards
+- **Functional requirements**: What the solution should accomplish
+- **Non-functional requirements**: Performance, security, scalability considerations
+- **Constraints**: Time, resource, or technical limitations
+- **Dependencies**: External systems, APIs, or services that must be considered
 
-### Code Quality Principles
+- **Acceptance criteria**: Define what constitutes a successful solution
+- **Code quality standards**: Specify coding conventions, patterns, or best practices to follow
+- **Documentation needs**: Indicate if comments, README updates, or other docs are required
+- **Testing requirements**: Specify unit tests, integration tests, or manual testing needed
 
-- **SOLID Principles** - Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
-- **DRY** - Don't Repeat Yourself
-- **KISS** - Keep It Simple, Stupid
-- **Clean Code** - Readable, maintainable, and self-documenting code
+### 3.1. Provide task using Github
 
-### Testing Requirements
+> Using the following command, read the task details
 
-- **Unit Tests** - Test individual components in isolation
-- **Integration Tests** - Test component interactions when applicable
-- **Test Coverage** - Aim for high coverage while focusing on meaningful tests
-- **Test Naming** - Clear, descriptive test names that explain the scenario
+```bash
+# For Github Repository tasks:
 
-### Version Control Standards
+export $(cat .env | xargs)
+ISSUE_NUMBER=221 gh issue view $ISSUE_NUMBER --repo $GH_REPO --json title,body,comments
 
-- **Commit Messages** - Use conventional commit format when possible
-- **Branch Naming** - Follow project conventions (e.g., `feature/`, `bugfix/`, `hotfix/`)
-- **PR Standards** - Include context, testing notes, and impact assessment
+# For Github Project tasks:
 
-## Tools & Integration
+export $(cat .env | xargs)
+# if you don;t know the project id, just list them using:
+# gh project list --owner $GH_OWNER
+TASK_NUMBER=221 gh project item-list $GH_PROJECT --owner $GH_OWNER --format json | jq '.items[] | select(.content.number == '$TASK_NUMBER') | {title: .content.title, body: .content.body}'
+```
 
-- **Version Control**: Git or Jujutsu (jj) depending on project setup
-- **GitHub Integration**: Use GitHub CLI (gh) for issue and PR management
-- **Testing Framework**: Use project-appropriate testing tools and frameworks
-- **Code Analysis**: Follow linting and static analysis rules established in the project
+### 3.2. Provide Task verbally and ask AI to create the task for you
 
-## Expected Deliverables
+#### Provide the task verbally
 
-- **Working Code** - Functional implementation that meets requirements
-- **Comprehensive Tests** - Full test suite covering new functionality
-- **Clean Git History** - Well-structured commits with clear messages
-- **Pull Request** - Complete PR with description, testing notes, and documentation updates
-- **Updated Documentation** - Any necessary updates to README, API docs, or other relevant documentation
+>Your task is to extend the set of TSConfig particular configs for bun and deno as well as complete the existing configs based on the latest best practices of TypeScript.
+> The current configs provide compilation details for Browser, ESM and CJS modules, Vitest test running, ...
+
+#### Confirm Task
+
+> If you have questions about the the task, please ask for clarification before proceeding.
+
+Then
+
+> Please summarize the task to ensure understanding.
+
+#### Create a Github Issue (and Attach it to a Github Project)
+
+> Based on our discussions, please create a task using the following command:
+
+```bash
+# Create Github Issue
+export $(cat .env | xargs)
+gh issue create --repo $GH_REPO --title "Your Issue Title" --body "Your issue description"
+
+# Create Github Task
+export $(cat .env | xargs)
+ISSUE_URL=$(gh issue create --repo $GH_REPO --title "Your Issue Title" --body "Your issue description" --json url --jq '.url')
+gh project item-add $GH_PROJECT --owner $GH_OWNER --url $ISSUE_URL
+
+# Create using template
+export $(cat .env | xargs)
+gh issue create --repo $GH_REPO \
+  --title "Extend TSConfig for Bun and Deno" \
+  --body "Extend the set of TSConfig particular configs for bun and deno as well as complete the existing configs based on the latest best practices of TypeScript." \
+  --label "enhancement"
+```
+
+### 3.3. Code Context Sharing
+
+If you have resources the AI needs to be aware of, share them with it.
+
+- **Relevant code snippets**: Share the specific files or functions related to the task
+- **File structure**: Provide an overview of the project architecture
+- **Recent changes**: Mention any recent modifications that might be relevant
+- **Testing setup**: Describe existing test frameworks and coverage
+
+> Please read the following files and summarize before starting working on the task.
+
+### 3.4. Implementation Details
+
+> Please provide a short summary of how you would implement the request. Provide short code snippets (without providing the whole solution). If possible, use pseudo code not the requested programming language.
+
+### 3.5. Implementation of Unit Tests
+
+> Since we are using a Test-Driven Development process, please write the unit tests and explain them to me in a short summary.
+
+
+### 3.6. Implementation of Code
+
+> Please proceed to code step-by-step implementation, explaining first what you are going to do and expecting a confirm prompt from me.
+
+### 3.7. Debugging
+
+> In case tests fail, or the implementation not being good enough, start from 3.1. again, by providing small descriptions on what's not working properly.
+
+## Best Practices
+
+### What to Do
+
+- ✅ Provide complete error messages and logs
+- ✅ Share relevant configuration and setup files
+- ✅ Be specific about versions (Node.js 18.x, Python 3.11, etc.)
+- ✅ Include examples of desired input/output
+- ✅ Mention any patterns or conventions your team follows
+- ✅ Ask for explanations of the solution approach
+
+### What to Avoid
+
+- ❌ Assume the AI knows your project structure
+- ❌ Use vague terms like "it doesn't work"
+- ❌ Skip mentioning important dependencies or integrations
+- ❌ Forget to specify the target environment or platform
+- ❌ Rush through the problem description
+
+## Example Interaction Template
+
+```markdown
+**Context**: Working on a Node.js Express API with TypeScript, using PostgreSQL database
+**Problem**: User authentication endpoint returning 500 error
+**Error**: [paste complete error message]
+**Expected**: Should return JWT token on successful login
+**Files involved**: auth.controller.ts, user.model.ts, auth.middleware.ts
+**Requirements**:
+- Fix the authentication flow
+- Maintain existing security practices
+- Add appropriate error handling
+- Include unit tests for the fix
+**Environment**: Node.js 18.x, Express 4.x, TypeScript 5.x, PostgreSQL 14
+```
+
+## Validation Checklist
+
+Before submitting your request, ensure you've covered:
+
+- [ ] Clear problem statement
+- [ ] Relevant technical context
+- [ ] Expected outcome defined
+- [ ] Error details provided (if applicable)
+- [ ] Technology stack specified
+- [ ] Code examples or file structure shared
+- [ ] Requirements and constraints listed
+- [ ] Quality standards mentioned
