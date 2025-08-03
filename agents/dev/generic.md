@@ -12,7 +12,17 @@ As a Developer working with AI, you need to provide clear, structured guidance t
 > Context: You are
 > - working on an application/module that... (`Clearly state what type of application/system you're working on`)
 > - using ... (`List programming languages, frameworks, libraries, and tools being used`)
-> - using .env.project for project details like GH_TOKEN, GH_OWNER, GH_REPO, etc... (`If applicable, mention how environment variables are managed`)
+> - using .env.project for project details like GH_TOKEN, GH_OWNER, GH_REPO, etc... (`This is for AI interaction only - separate from any project .env files`)
+
+**Example .env.project file:**
+
+```bash
+# GitHub Configuration for AI Interaction
+GH_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+GH_OWNER=your-username-or-organization
+GH_REPO=repository-name
+GH_PROJECT=123
+```
 
 
 ## 2. Confirm Role and Context
@@ -23,79 +33,117 @@ Then
 
 > Please summarize the role and context to ensure understanding.
 
+## 2.1. General Communication Preferences
+
+Set your default communication style for the entire session:
+
+**Explanation Depth:**
+
+- Prefer high-level overviews or detailed step-by-step explanations
+- Request pseudocode, actual code, or conceptual descriptions
+
+**Code Format Preferences:**
+
+- Complete files, diffs only, or focused snippets
+- Inline comments level (minimal, moderate, extensive)
+
+**Interaction Style:**
+
+- Ask for confirmation before each major step
+- Provide alternatives when multiple approaches exist
+- Explain reasoning behind technical decisions
+
+*Note: These can be overridden in specific implementation steps as needed.*
+
 ## 3. Task Definition
+
+### 3.0. Problem Description
 
 - **State the specific issue**: Be precise about what's not working or what needs to be built
 - **Provide error messages**: Include complete error logs, stack traces, or console outputs
 - **Explain expected behavior**: Describe what should happen vs. what is actually happening
 - **Include reproduction steps**: Detail how to reproduce the issue if applicable
 
+### 3.1. Requirements Gathering
+
 - **Functional requirements**: What the solution should accomplish
 - **Non-functional requirements**: Performance, security, scalability considerations
 - **Constraints**: Time, resource, or technical limitations
 - **Dependencies**: External systems, APIs, or services that must be considered
+
+### 3.2. Success Criteria
 
 - **Acceptance criteria**: Define what constitutes a successful solution
 - **Code quality standards**: Specify coding conventions, patterns, or best practices to follow
 - **Documentation needs**: Indicate if comments, README updates, or other docs are required
 - **Testing requirements**: Specify unit tests, integration tests, or manual testing needed
 
-### 3.1. Provide task using Github
+### 3.3. Task Source - Choose Your Approach
 
-> Using the following command, read the task details
+#### 3.3.1. Provide Task Using Github (if Task Already Defined)
+
+> Use this (or a similar) command to read existing GitHub task details:
 
 ```bash
 # For Github Repository tasks:
 
-export $(cat .env | xargs)
+export $(cat .env.project | xargs)
 ISSUE_NUMBER=221 gh issue view $ISSUE_NUMBER --repo $GH_REPO --json title,body,comments
 
 # For Github Project tasks:
 
-export $(cat .env | xargs)
+export $(cat .env.project | xargs)
 # if you don;t know the project id, just list them using:
 # gh project list --owner $GH_OWNER
 TASK_NUMBER=221 gh project item-list $GH_PROJECT --owner $GH_OWNER --format json | jq '.items[] | select(.content.number == '$TASK_NUMBER') | {title: .content.title, body: .content.body}'
 ```
 
-### 3.2. Provide Task verbally and ask AI to create the task for you
+#### 3.3.2. Provide Task Verbally (if not Defined Already) and Ask AI to Create It for You
 
-#### Provide the task verbally
+#### 3.3.2. Define Task Verbally and Create GitHub Issue
+
+**Provide the task verbally:**
+
+Provide task requirements to AI.
 
 >Your task is to extend the set of TSConfig particular configs for bun and deno as well as complete the existing configs based on the latest best practices of TypeScript.
 > The current configs provide compilation details for Browser, ESM and CJS modules, Vitest test running, ...
 
-#### Confirm Task
+**Confirm Task:**
 
-> If you have questions about the the task, please ask for clarification before proceeding.
+Make sure AI understood the task.
 
-Then
+> If you have questions about the task, please ask for clarification before proceeding.
+
+Answer all questions and repeat until no more questions, then
 
 > Please summarize the task to ensure understanding.
 
-#### Create a Github Issue (and Attach it to a Github Project)
+**Create a Github Issue (and Attach it to a Github Project):**
 
-> Based on our discussions, please create a task using the following command:
+Ask AI to create the task for you
+
+> Based on our discussions, use the following (or a similar) command to create the task:
 
 ```bash
 # Create Github Issue
-export $(cat .env | xargs)
+export $(cat .env.project | xargs)
 gh issue create --repo $GH_REPO --title "Your Issue Title" --body "Your issue description"
 
-# Create Github Task
-export $(cat .env | xargs)
+# Create Github Task and attach to Project
+export $(cat .env.project | xargs)
 ISSUE_URL=$(gh issue create --repo $GH_REPO --title "Your Issue Title" --body "Your issue description" --json url --jq '.url')
 gh project item-add $GH_PROJECT --owner $GH_OWNER --url $ISSUE_URL
 
-# Create using template
-export $(cat .env | xargs)
+# Create using template example
+export $(cat .env.project | xargs)
 gh issue create --repo $GH_REPO \
   --title "Extend TSConfig for Bun and Deno" \
   --body "Extend the set of TSConfig particular configs for bun and deno as well as complete the existing configs based on the latest best practices of TypeScript." \
   --label "enhancement"
 ```
 
-### 3.3. Code Context Sharing
+### 3.4. Code Context Sharing
 
 If you have resources the AI needs to be aware of, share them with it.
 
@@ -106,22 +154,59 @@ If you have resources the AI needs to be aware of, share them with it.
 
 > Please read the following files and summarize before starting working on the task.
 
-### 3.4. Implementation Details
+## 4. Implementation
+
+### 4.1. Implementation Strategy
+
+Ask AI to show it understood the task and provide an implementation approach.
 
 > Please provide a short summary of how you would implement the request. Provide short code snippets (without providing the whole solution). If possible, use pseudo code not the requested programming language.
 
-### 3.5. Implementation of Unit Tests
+**Communication Preferences for this step:**
 
-> Since we are using a Test-Driven Development process, please write the unit tests and explain them to me in a short summary.
+- Request high-level overview or detailed explanation as preferred
+- Ask for pseudocode vs actual code snippets
+- Specify if you want alternative approaches discussed
 
+### 4.2. Test-Driven Development - Unit Tests
 
-### 3.6. Implementation of Code
+Ask AI to implement the unit tests first, following TDD principles.
 
-> Please proceed to code step-by-step implementation, explaining first what you are going to do and expecting a confirm prompt from me.
+> Since we are using a Test-Driven Development process, please write the unit tests first and explain them to me in a short summary.
 
-### 3.7. Debugging
+**Communication Preferences for this step:**
 
-> In case tests fail, or the implementation not being good enough, start from 3.1. again, by providing small descriptions on what's not working properly.
+- Request explanation of test scenarios and edge cases
+- Specify test framework preferences if not already established
+- Ask for test structure and organization preferences
+
+### 4.3. Code Implementation
+
+Ask AI to implement the code based on the unit tests, following TDD red-green-refactor cycle.
+
+> Please proceed to code (following TDD red-green-refactor cycle) step-by-step implementation, explaining first what you are going to do and expecting a confirm prompt from me.
+
+**Communication Preferences for this step:**
+
+- Request step-by-step explanations before each implementation phase
+- Specify if you want complete files, diffs, or code snippets
+- Ask for confirmation before proceeding to next step
+
+### 4.4. Testing and Validation
+
+Run tests and validate the implementation works as expected.
+
+> Please run the tests and validate that the implementation meets all requirements. If tests fail, explain what needs to be fixed.
+
+**Communication Preferences for this step:**
+
+- Request detailed test output analysis
+- Ask for explanation of any failures or warnings
+- Specify if you want suggestions for improvements
+
+### 4.5. Debugging and Iteration
+
+> In case tests fail, or the implementation is not good enough, restart from 4.1 again, providing small descriptions of what's not working properly.
 
 ## Best Practices
 
