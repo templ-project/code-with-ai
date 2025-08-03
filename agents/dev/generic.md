@@ -1,18 +1,44 @@
 # Developer Instructions for AI Interaction
 
-## Overview
+- [Developer Instructions for AI Interaction](#developer-instructions-for-ai-interaction)
+  - [1. Set the Role and the Context](#1-set-the-role-and-the-context)
+    - [200 tokens](#200-tokens)
+    - [120 tokens](#120-tokens)
+  - [2. Provide the task details](#2-provide-the-task-details)
 
-As a Developer working with AI, you need to provide clear, structured guidance to ensure the AI fully comprehends your task and can deliver accurate, actionable results. Follow these steps to maximize collaboration effectiveness.
 
 ## 1. Set the Role and the Context
 
-> Role: You are a Senior Developer with
-> - good knowledge of Design Patterns, Coding Principles and Clean Code
-> - good knowledge of Test-Driven Development process
-> Context: You are
-> - working on an application/module that... (`Clearly state what type of application/system you're working on`)
-> - using ... (`List programming languages, frameworks, libraries, and tools being used`)
-> - using .env.project for project details like GH_TOKEN, GH_OWNER, GH_REPO, etc... (`This is for AI interaction only - separate from any project .env files`)
+### 200 tokens
+
+> You are a Senior Developer with exceptional knowledge of design patterns,
+> coding principles, and clean code. You always apply TDD first, using
+> frameworks such as `testing framework`. You are skilled in languages and
+> frameworks like `programming language` and `application framework`. You
+> configure keys and secrets securely (using `environment variables`,
+> `config files`, or `vault systems`). Your focus is to design maintainable,
+> scalable solutions, applying `CI/CD` practices and clear documentation. You
+> may work across `backend`, `frontend`, or `full-stack`, and provide
+> guidance or mentoring when needed.
+
+### 120 tokens
+
+> You are a Senior Developer with deep knowledge of `design patterns`, 
+> `clean code`, and `coding principles`. You practice `TDD` as a first 
+> approach, using `testing frameworks`. You are proficient in `programming languages` 
+> and `application frameworks`. You configure `keys` and `secrets` securely via 
+> `environment variables`, `config files`, or `vault systems`. Your focus is 
+> delivering `scalable`, `maintainable` solutions with `CI/CD`, clear `documentation`, 
+> and consistent `refactoring`. You may work in `backend`, `frontend`, 
+> or `full-stack`, and support others through `mentoring` and `code reviews`.
+
+## 2. Provide the task details
+
+> Write the task the LLM needs to work on, be concise, yet detailed on the achievements it needs to accomplish.
+
+
+
+<!--
 
 **Example .env.project file:**
 
@@ -23,60 +49,6 @@ GH_OWNER=your-username-or-organization
 GH_REPO=repository-name
 GH_PROJECT=123
 ```
-
-
-## 2. Confirm Role and Context
-
-> If you have questions about the role or context, please ask for clarification before proceeding.
-
-Then
-
-> Please summarize the role and context to ensure understanding.
-
-## 2.1. General Communication Preferences
-
-Set your default communication style for the entire session:
-
-**Explanation Depth:**
-
-- Prefer high-level overviews or detailed step-by-step explanations
-- Request pseudocode, actual code, or conceptual descriptions
-
-**Code Format Preferences:**
-
-- Complete files, diffs only, or focused snippets
-- Inline comments level (minimal, moderate, extensive)
-
-**Interaction Style:**
-
-- Ask for confirmation before each major step
-- Provide alternatives when multiple approaches exist
-- Explain reasoning behind technical decisions
-
-*Note: These can be overridden in specific implementation steps as needed.*
-
-## 3. Task Definition
-
-### 3.0. Problem Description
-
-- **State the specific issue**: Be precise about what's not working or what needs to be built
-- **Provide error messages**: Include complete error logs, stack traces, or console outputs
-- **Explain expected behavior**: Describe what should happen vs. what is actually happening
-- **Include reproduction steps**: Detail how to reproduce the issue if applicable
-
-### 3.1. Requirements Gathering
-
-- **Functional requirements**: What the solution should accomplish
-- **Non-functional requirements**: Performance, security, scalability considerations
-- **Constraints**: Time, resource, or technical limitations
-- **Dependencies**: External systems, APIs, or services that must be considered
-
-### 3.2. Success Criteria
-
-- **Acceptance criteria**: Define what constitutes a successful solution
-- **Code quality standards**: Specify coding conventions, patterns, or best practices to follow
-- **Documentation needs**: Indicate if comments, README updates, or other docs are required
-- **Testing requirements**: Specify unit tests, integration tests, or manual testing needed
 
 ### 3.3. Task Source - Choose Your Approach
 
@@ -208,6 +180,36 @@ Run tests and validate the implementation works as expected.
 
 > In case tests fail, or the implementation is not good enough, restart from 4.1 again, providing small descriptions of what's not working properly.
 
+## 5. Finalizing
+
+Run global tests, lints, etc on the entire project.
+
+### 5.1. Create task branch
+
+This can happen here or in the beggining of the task, if the task is more complicated
+
+> Provide a command for creating a new branch for the task
+
+Then
+
+> Provide a comprehensive commit message (with a max 50 words summary, including the task ID)
+
+### 5.2. Create a Pull Request
+
+> Create a Pull Request for the new branch (with a comprehensive 200 workds summary of the task, including also the task ID)
+
+```bash
+gh pr create \
+  --repo "$GH_REPO" \
+  --base "main" \
+  --head "$BRANCH_NAME" \
+  --title "Pull Requesdt Title (#22)" \
+  --body "Pull Request Description
+
+Closes #22" \
+  --assignee "@me"
+```
+
 ## Best Practices
 
 ### What to Do
@@ -255,3 +257,5 @@ Before submitting your request, ensure you've covered:
 - [ ] Code examples or file structure shared
 - [ ] Requirements and constraints listed
 - [ ] Quality standards mentioned
+
+-->
