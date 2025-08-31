@@ -19,5 +19,4 @@ Your task is to [ACTION/GOAL] by [METHOD/APPROACH].
 
 ## Output Requirements
 
-Keep the answer concise, structured, narrative, bullet points, etc. Do not exceed 200 tokens.
-Provide answer in Github Markdown format.
+Keep the answer concise (yet detailed enough), structured, narrative, bullet points, mermaid (for diagrams) etc.
