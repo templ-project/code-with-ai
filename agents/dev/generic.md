@@ -11,32 +11,42 @@
 
 ### 200 tokens
 
-> You are a Senior Developer with exceptional knowledge of design patterns,
-> coding principles, and clean code. You always apply TDD first, using
-> frameworks such as `testing framework`. You are skilled in languages and
-> frameworks like `programming language` and `application framework`. You
-> configure keys and secrets securely (using `environment variables`,
-> `config files`, or `vault systems`). Your focus is to design maintainable,
-> scalable solutions, applying `CI/CD` practices and clear documentation. You
-> may work across `backend`, `frontend`, or `full-stack`, and provide
-> guidance or mentoring when needed.
+```markdown
+You are a Senior Developer with exceptional knowledge of `design patterns`, `coding principles`, and `clean code`. You
+always apply `TDD` first, using frameworks such as `<testing framework>`. You are skilled in languages and frameworks
+like `<programming language>` and `application framework`. You configure keys and secrets securely (using
+`<environment variables>`, `config files`, or `vault systems`). Your focus is to design `maintainable`, `scalable`
+solutions, applying `CI/CD` practices and clear documentation. You may work across `backend`, `frontend`, or
+`full-stack`, and provide guidance or mentoring when needed. You always respect
+[Google Style Guides](https://google.github.io/styleguide/) when coding.
+```
 
 ### 120 tokens
 
-> You are a Senior Developer with deep knowledge of `design patterns`, 
-> `clean code`, and `coding principles`. You practice `TDD` as a first 
-> approach, using `testing frameworks`. You are proficient in `programming languages` 
-> and `application frameworks`. You configure `keys` and `secrets` securely via 
-> `environment variables`, `config files`, or `vault systems`. Your focus is 
-> delivering `scalable`, `maintainable` solutions with `CI/CD`, clear `documentation`, 
-> and consistent `refactoring`. You may work in `backend`, `frontend`, 
-> or `full-stack`, and support others through `mentoring` and `code reviews`.
+```markdown
+You are a Senior Developer with deep knowledge of `design patterns`, `clean code`, and `coding principles`. You
+practice `TDD` as a first approach, using `<testing frameworks>`. You are proficient in `<programming languages>`
+and `<application frameworks>`. You configure `keys` and `secrets` securely via `environment variables`,
+`config files`, or `vault systems`. Your focus is delivering `scalable`, `maintainable` solutions with `CI/CD`, clear
+`documentation`, and consistent `refactoring`. You may work in `backend`, `frontend`, or `full-stack`, and support
+others through `mentoring` and `code reviews`.
+You always respect [Google Style Guides](https://google.github.io/styleguide/) when coding.
+```
 
-## 2. Provide the task details
+## Task Instruction
 
-> Write the task the LLM needs to work on, be concise, yet detailed on the achievements it needs to accomplish.
+Your task is to [ACTION/GOAL] by [METHOD/APPROACH].
 
+## Output Requirements
 
+Keep the solution concise, simple and well documented.
+Always use modern and popular frameworks; do not reinvent the wheel when there are frameworks/libraries/modules already
+written for a specific functionality.
+
+## Testing & Mocking Frameworks
+
+<!-- List top 5 most popular testing and mocking frameworks -->
+- []()
 
 <!--
 
@@ -54,7 +64,7 @@ GH_PROJECT=123
 
 #### 3.3.1. Provide Task Using Github (if Task Already Defined)
 
-> Use this (or a similar) command to read existing GitHub task details:
+Use this (or a similar) command to read existing GitHub task details:
 
 ```bash
 # For Github Repository tasks:
@@ -79,23 +89,23 @@ TASK_NUMBER=221 gh project item-list $GH_PROJECT --owner $GH_OWNER --format json
 Provide task requirements to AI.
 
 >Your task is to extend the set of TSConfig particular configs for bun and deno as well as complete the existing configs based on the latest best practices of TypeScript.
-> The current configs provide compilation details for Browser, ESM and CJS modules, Vitest test running, ...
+The current configs provide compilation details for Browser, ESM and CJS modules, Vitest test running, ...
 
 **Confirm Task:**
 
 Make sure AI understood the task.
 
-> If you have questions about the task, please ask for clarification before proceeding.
+If you have questions about the task, please ask for clarification before proceeding.
 
 Answer all questions and repeat until no more questions, then
 
-> Please summarize the task to ensure understanding.
+Please summarize the task to ensure understanding.
 
 **Create a Github Issue (and Attach it to a Github Project):**
 
 Ask AI to create the task for you
 
-> Based on our discussions, use the following (or a similar) command to create the task:
+Based on our discussions, use the following (or a similar) command to create the task:
 
 ```bash
 # Create Github Issue
@@ -124,7 +134,7 @@ If you have resources the AI needs to be aware of, share them with it.
 - **Recent changes**: Mention any recent modifications that might be relevant
 - **Testing setup**: Describe existing test frameworks and coverage
 
-> Please read the following files and summarize before starting working on the task.
+Please read the following files and summarize before starting working on the task.
 
 ## 4. Implementation
 
@@ -132,7 +142,7 @@ If you have resources the AI needs to be aware of, share them with it.
 
 Ask AI to show it understood the task and provide an implementation approach.
 
-> Please provide a short summary of how you would implement the request. Provide short code snippets (without providing the whole solution). If possible, use pseudo code not the requested programming language.
+Please provide a short summary of how you would implement the request. Provide short code snippets (without providing the whole solution). If possible, use pseudo code not the requested programming language.
 
 **Communication Preferences for this step:**
 
@@ -144,7 +154,7 @@ Ask AI to show it understood the task and provide an implementation approach.
 
 Ask AI to implement the unit tests first, following TDD principles.
 
-> Since we are using a Test-Driven Development process, please write the unit tests first and explain them to me in a short summary.
+Since we are using a Test-Driven Development process, please write the unit tests first and explain them to me in a short summary.
 
 **Communication Preferences for this step:**
 
@@ -156,7 +166,7 @@ Ask AI to implement the unit tests first, following TDD principles.
 
 Ask AI to implement the code based on the unit tests, following TDD red-green-refactor cycle.
 
-> Please proceed to code (following TDD red-green-refactor cycle) step-by-step implementation, explaining first what you are going to do and expecting a confirm prompt from me.
+Please proceed to code (following TDD red-green-refactor cycle) step-by-step implementation, explaining first what you are going to do and expecting a confirm prompt from me.
 
 **Communication Preferences for this step:**
 
@@ -168,7 +178,7 @@ Ask AI to implement the code based on the unit tests, following TDD red-green-re
 
 Run tests and validate the implementation works as expected.
 
-> Please run the tests and validate that the implementation meets all requirements. If tests fail, explain what needs to be fixed.
+Please run the tests and validate that the implementation meets all requirements. If tests fail, explain what needs to be fixed.
 
 **Communication Preferences for this step:**
 
@@ -178,7 +188,7 @@ Run tests and validate the implementation works as expected.
 
 ### 4.5. Debugging and Iteration
 
-> In case tests fail, or the implementation is not good enough, restart from 4.1 again, providing small descriptions of what's not working properly.
+In case tests fail, or the implementation is not good enough, restart from 4.1 again, providing small descriptions of what's not working properly.
 
 ## 5. Finalizing
 
@@ -188,15 +198,15 @@ Run global tests, lints, etc on the entire project.
 
 This can happen here or in the beggining of the task, if the task is more complicated
 
-> Provide a command for creating a new branch for the task
+Provide a command for creating a new branch for the task
 
 Then
 
-> Provide a comprehensive commit message (with a max 50 words summary, including the task ID)
+Provide a comprehensive commit message (with a max 50 words summary, including the task ID)
 
 ### 5.2. Create a Pull Request
 
-> Create a Pull Request for the new branch (with a comprehensive 200 workds summary of the task, including also the task ID)
+Create a Pull Request for the new branch (with a comprehensive 200 workds summary of the task, including also the task ID)
 
 ```bash
 gh pr create \

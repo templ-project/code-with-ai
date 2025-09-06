@@ -25,7 +25,7 @@ Your task is to [ACTION/GOAL] by [METHOD/APPROACH].
 
 ## Output Requirements
 
-Keep the answer concise, structured, narrative, bullet points, etc. Do not exceed 200 tokens.
+Keep the answer concise, structured, narrative, bullet points, etc. Do not exceed 200 tokens for the role.
 Provide answer in Github Markdown format.
 
 ## Example (filled in)
