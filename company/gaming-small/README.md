@@ -7,7 +7,7 @@
     - [Business Development](#business-development)
     - [Producer / Project Manager](#producer--project-manager)
       - [Game Designer / Creative Director](#game-designer--creative-director)
-      - [Leade Programmer / Technical Director](#leade-programmer--technical-director)
+      - [Lead Programmer / Technical Director](#lead-programmer--technical-director)
     - [Community Manager / Marketing](#community-manager--marketing)
     - [Sound Designer / Composer](#sound-designer--composer)
 
@@ -107,7 +107,7 @@ Studio Head (CEO/Founder)
 - Music composition for gameplay and atmosphere
 - Sound effect creation and audio design
 - Audio implementation and technical integration
-- Audio optimization for different platforms
+- Audio optimisation for different platforms
 
 ---
 
