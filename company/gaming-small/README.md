@@ -7,7 +7,7 @@
     - [Business Development](#business-development)
     - [Producer / Project Manager](#producer--project-manager)
       - [Game Designer / Creative Director](#game-designer--creative-director)
-      - [Leade Programmer / Technical Director](#leade-programmer--technical-director)
+      - [Lead Programmer / Technical Director](#lead-programmer--technical-director)
     - [Community Manager / Marketing](#community-manager--marketing)
     - [Sound Designer / Composer](#sound-designer--composer)
 
@@ -50,12 +50,12 @@ Studio Head (CEO/Founder)
 
 ### Producer / Project Manager
 
-> Keeps deadlines, budgets, scope creep, and coffee supplies in check. The person who says "we need to ship this century."
+> [Keeps deadlines](./producer.md), budgets, scope creep, and coffee supplies in check. The person who says "we need to ship this century."
 
 - Project scope and timeline details
 - Resource allocation discussions
 - Milestone planning
-- Progress tracking once project starts
+- Progress tracking once the project starts
 
 **Leading**:
 - **[QA Tester](./qa-tester.md)** – the hero who breaks everything on purpose and documents every possible way players can ruin your beautiful creation.
@@ -75,7 +75,7 @@ Studio Head (CEO/Founder)
     - **[Animator](./animator.md)** – makes sure your character doesn't run like a potato with legs. Also handles VFX and particle systems in small teams.
   - **[Writer](./writer.md)** / Narrative Designer – crafts story, dialogue, and lore. In small teams, often handled by the game designer or outsourced. *(Often freelanced)*
 
-#### Leade Programmer / Technical Director
+#### Lead Programmer / Technical Director
 
 > **[The code wizard](./lead-programmer.md)** who makes the spaceship-sword work (and fixes everyone else's code when it doesn't).
 
@@ -107,7 +107,7 @@ Studio Head (CEO/Founder)
 - Music composition for gameplay and atmosphere
 - Sound effect creation and audio design
 - Audio implementation and technical integration
-- Audio optimization for different platforms
+- Audio optimisation for different platforms
 
 ---
 
