@@ -1,32 +1,38 @@
-## Your Tasks
+# Developer Methodology
 
-1. **Requirements & References**
-   - Read and synthesize all provided references. Identify ambiguities.
-   - If assumptions are needed, list them explicitly under **Assumptions** and proceed.
-   - Do not proceed to next task until you understand the requirements.
+## 7-Step Development Process
 
-2. **Design**
-   - Propose a lean solution sketch: key modules, data models, and flows.
-   - Note relevant **design patterns** (e.g., Strategy, Adapter, Factory, CQRS) and why they fit.
-   - Call out risks (perf, security, concurrency, migration) and mitigations.
+1. **Project Setup & Initialization**
+   - **New Projects**: MUST use official project templates when available (see language-specific overrides)
+   - **Existing Projects**: Verify project structure and tooling; adapt to existing conventions
+   - Ensure proper development environment setup before proceeding
 
-3. **Implementation**
-   - Write production-quality code with clear structure, small functions, and meaningful names.
-   - Add logging where it helps debugging (not noise). Handle errors explicitly.
-   - Keep public APIs stable; document any breaking changes.
+2. **Requirements Analysis**
+   - Synthesize all references and identify ambiguities
+   - List explicit assumptions if needed; proceed systematically
 
-4. **Testing (TDD)**
-   - Start with failing unit tests that capture the acceptance criteria.
-   - Aim for meaningful coverage of core logic and edge cases (not coverage theater).
-   - Include fixtures/mocks for external I/O. Keep tests fast and deterministic.
+3. **Solution Design**
+   - Propose lean architecture: key modules, data models, flows
+   - Apply relevant patterns (Strategy, Factory, CQRS) with justification
+   - Identify risks (performance, security, concurrency) and mitigations
 
-5. **Documentation**
-   - Update/produce concise README or module-level docs.
-   - Include **Usage examples**, **Configuration**, and **Troubleshooting**.
+4. **Implementation**
+   - Write production-quality code: clear structure, meaningful names, small functions
+   - Add strategic logging and explicit error handling
+   - Maintain API stability; document breaking changes
 
-6. **Validation**
-   - Verify acceptance criteria (below) with runnable commands.
-   - Run linters/formatters; ensure CI-friendly scripts are provided.
+5. **Testing (TDD when required)**
+   - Start with failing tests capturing acceptance criteria
+   - Focus on core logic and edge cases (not coverage theater)
+   - Use fixtures/mocks for external dependencies; keep tests fast
+
+6. **Documentation**
+   - Update README with usage examples, configuration, troubleshooting
+   - Document design decisions and patterns used
+
+7. **Validation**
+   - Verify all acceptance criteria with runnable commands
+   - Run linters/formatters; provide CI-ready scripts
 
 ---
 
@@ -57,11 +63,13 @@
 ## Output Format
 
 Respond with:
-1) **Assumptions**
-2) **Design notes** (patterns, key decisions)
-3) **Implementation** (code snippets or file diffs as needed)
-4) **Tests** (TDD progression or final suite)
-5) **How to run & test** (exact commands)
-6) **Summary** (what you did + anything the reviewer should double-check)
+
+1) **Project Setup** (if new project: template commands and verification steps)
+2) **Assumptions**
+3) **Design notes** (patterns, key decisions)
+4) **Implementation** (code snippets or file diffs as needed)
+5) **Tests** (TDD progression or final suite)
+6) **How to run & test** (exact commands)
+7) **Summary** (what you did + anything the reviewer should double-check)
 
 Keep it crisp and reviewer-friendly.

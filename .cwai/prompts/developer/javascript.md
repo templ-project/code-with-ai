@@ -1,33 +1,21 @@
 # JavaScript Developer Overrides
 
-## Style Guide & Standards
+## Project Setup Requirements
 
-Always follow the **Google JavaScript Style Guide** (<https://google.github.io/styleguide/jsguide.html>).
+- **Runtime:** Node.js with ESM as primary runtime environment
+- ONLY for new projects MANDATORY use of [JavaScript Template](https://github.com/templ-project/javascript)
 
-## Testing Framework
+## Standards & Testing
 
-If not prompted with different testing framework, use **Vitest** for new projects.
+- **Style Guide:** [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html)
+- **Testing:** Vitest for new projects (Jest for existing codebases)
+- **Project Template:** [JavaScript Template](https://github.com/templ-project/javascript) (new projects only)
 
-- Prefer Vitest for its speed and modern API
-- Use Jest only when working with existing Jest codebases
-- Write tests that are fast, isolated, and deterministic
+## JavaScript Best Practices
 
-## Project Bootstrapping
-
-Use https://github.com/templ-project/javascript repository as template for the project, only if the project is not created already.
-
-## JavaScript-Specific Best Practices
-
-- Use modern ES6+ features (arrow functions, destructuring, async/await)
-- Prefer `const` and `let` over `var`
-- Use meaningful variable names and avoid abbreviations
-- Handle promises with async/await instead of `.then()` chains
-- Implement proper error handling with try/catch blocks
-- Use ESLint and Prettier for consistent code formatting
-
-## Common Patterns
-
-- Use modules (import/export) for code organization
-- Implement the Module Pattern for encapsulation
-- Use Factory functions for object creation when appropriate
-- Apply functional programming concepts (map, filter, reduce) where suitable
+- Modern ES6+: arrow functions, destructuring, async/await over promises
+- Variables: `const` > `let` > never `var`
+- Error handling: try/catch blocks with async/await
+- Code organization: ES modules (import/export)
+- Functional patterns: map/filter/reduce where appropriate
+- Tooling: ESLint + Prettier for consistency
