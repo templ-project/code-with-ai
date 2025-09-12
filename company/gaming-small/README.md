@@ -29,7 +29,6 @@ Studio Head (CEO/Founder)
 └── Sound Designer/Composer (often freelanced)
 ```
 
-
 ## Studio Head / Creative Director
 
 > Makes big decisions, secures funding, and occasionally codes/designs when needed.
@@ -58,6 +57,7 @@ Studio Head (CEO/Founder)
 - Progress tracking once the project starts
 
 **Leading**:
+
 - **[QA Tester](./qa-tester.md)** – the hero who breaks everything on purpose and documents every possible way players can ruin your beautiful creation.
 
 #### Game Designer / Creative Director
@@ -70,10 +70,11 @@ Studio Head (CEO/Founder)
 - Creative direction input
 
 **Leading**:
-  - **[Level Designer](./level-designer.md)** – crafts the actual gameplay spaces and experiences. Often done by game designers in small teams.
-  - **[2D/3D Artist](./2d-3d-artist.md)** – creates characters, environments, UI, and everything visual. Often doubles as concept artist and texture artist.
-    - **[Animator](./animator.md)** – makes sure your character doesn't run like a potato with legs. Also handles VFX and particle systems in small teams.
-  - **[Writer](./writer.md)** / Narrative Designer – crafts story, dialogue, and lore. In small teams, often handled by the game designer or outsourced. *(Often freelanced)*
+
+- **[Level Designer](./level-designer.md)** – crafts the actual gameplay spaces and experiences. Often done by game designers in small teams.
+- **[2D/3D Artist](./2d-3d-artist.md)** – creates characters, environments, UI, and everything visual. Often doubles as concept artist and texture artist.
+  - **[Animator](./animator.md)** – makes sure your character doesn't run like a potato with legs. Also handles VFX and particle systems in small teams.
+- **[Writer](./writer.md)** / Narrative Designer – crafts story, dialogue, and lore. In small teams, often handled by the game designer or outsourced. _(Often freelanced)_
 
 #### Lead Programmer / Technical Director
 
@@ -85,8 +86,9 @@ Studio Head (CEO/Founder)
 - Creative direction input
 
 **Leading**:
-  - **[Gameplay Programmer](./gameplay-programmer.md)** – writes the systems that make jumping feel good and enemies act smart (or at least not completely brain-dead).
-  - **[Technical Artist](./technical-artist.md)** – bridges the gap between art and programming, handles shaders, optimization, and tool creation.
+
+- **[Gameplay Programmer](./gameplay-programmer.md)** – writes the systems that make jumping feel good and enemies act smart (or at least not completely brain-dead).
+- **[Technical Artist](./technical-artist.md)** – bridges the gap between art and programming, handles shaders, optimization, and tool creation.
 
 ### Community Manager / Marketing
 
@@ -98,11 +100,12 @@ Studio Head (CEO/Founder)
 - Marketing campaign development and execution
 
 **Leading**:
-  - **[Localization Specialist](./localization-specialist.md)** – makes your game understandable in languages other than developer-English. *(Often freelanced)*
+
+- **[Localization Specialist](./localization-specialist.md)** – makes your game understandable in languages other than developer-English. _(Often freelanced)_
 
 ### Sound Designer / Composer
 
-> Creates the "pew-pews," epic music, ambient sounds, and that satisfying coin collection sound. *(Often freelanced)*
+> Creates the "pew-pews," epic music, ambient sounds, and that satisfying coin collection sound. _(Often freelanced)_
 
 - Music composition for gameplay and atmosphere
 - Sound effect creation and audio design
@@ -111,4 +114,4 @@ Studio Head (CEO/Founder)
 
 ---
 
-*Note: In small studios (2-10 people), most team members wear multiple hats and reporting structures are often flexible. The lead programmer might also be the technical director, the artist might handle UI design, and everyone probably does some level of QA testing.*
+_Note: In small studios (2-10 people), most team members wear multiple hats and reporting structures are often flexible. The lead programmer might also be the technical director, the artist might handle UI design, and everyone probably does some level of QA testing._

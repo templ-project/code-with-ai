@@ -2,7 +2,7 @@
 
 ## Primary Role
 
-* [Software Architect](software.md)
+- [Software Architect](software.md)
 
 ### Change Management
 

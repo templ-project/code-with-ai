@@ -64,12 +64,12 @@
 
 Respond with:
 
-1) **Project Setup** (if new project: template commands and verification steps)
-2) **Assumptions**
-3) **Design notes** (patterns, key decisions)
-4) **Implementation** (code snippets or file diffs as needed)
-5) **Tests** (TDD progression or final suite)
-6) **How to run & test** (exact commands)
-7) **Summary** (what you did + anything the reviewer should double-check)
+1. **Project Setup** (if new project: template commands and verification steps)
+2. **Assumptions**
+3. **Design notes** (patterns, key decisions)
+4. **Implementation** (code snippets or file diffs as needed)
+5. **Tests** (TDD progression or final suite)
+6. **How to run & test** (exact commands)
+7. **Summary** (what you did + anything the reviewer should double-check)
 
 Keep it crisp and reviewer-friendly.

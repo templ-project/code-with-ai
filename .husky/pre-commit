@@ -1,0 +1,6 @@
+
+npx prettier --write ./**/*.md
+
+npx eslint --fix --stats --no-warn-ignored ./**/*.md
+
+git add .

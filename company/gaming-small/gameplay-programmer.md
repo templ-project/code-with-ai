@@ -2,9 +2,9 @@
 
 > References
 >
-> * [Developer](../../agents/dev/generic.md)
-> * [Lead Programmer](./lead-programmer.md)
-> * [Game Designer](./game-designer.md)
+> - [Developer](../../agents/dev/generic.md)
+> - [Lead Programmer](./lead-programmer.md)
+> - [Game Designer](./game-designer.md)
 
 - [Gameplay Programmer](#gameplay-programmer)
   - [Role Setup](#role-setup)

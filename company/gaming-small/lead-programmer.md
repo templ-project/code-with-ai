@@ -1,8 +1,9 @@
 # Lead Programmer / Technical Director
 
 > References
-> * [Developer](../../agents/dev/generic.md)
-> * [Game Designer](./game-designer.md)
+>
+> - [Developer](../../agents/dev/generic.md)
+> - [Game Designer](./game-designer.md)
 
 - [Lead Programmer / Technical Director](#lead-programmer--technical-director)
   - [Role Setup](#role-setup)
@@ -26,4 +27,3 @@ Your task is to [ACTION/GOAL] by [METHOD/APPROACH].
 
 Keep the answer concise (yet detailed enough), structured, with code examples, architecture diagrams (Mermaid.JS), and performance considerations.
 Focus on scalable solutions that work across platforms and team sizes.
-

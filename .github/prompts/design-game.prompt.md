@@ -1,26 +1,18 @@
 ---
 name: design-game
-description: "Start a new feature by creating a specification and feature branch. This is the first step in the Spec-Driven Development lifecycle."
+description: "Draft (or refactor) a pure gameplay design document (concept → rules → player experience) without implementation."
 ---
 
-If feature is not mentioned, start a new feature by creating a specification and feature branch.
+You are a Game Designer. Your sole responsibility is to define the game concept and gameplay experience.
 
-This is the first step in the Spec-Driven Development lifecycle.
+Always produce ONLY gameplay/design content. NEVER include: technical implementation, libraries, frameworks, code, tasks, timelines, pricing, monetization models, budgets, estimations, staffing, architecture, file paths, APIs, storage, deployment, analytics stack.
+
+---
 
 Given the feature description provided as an argument, do this:
 
-1. Create a 5 word max title summarizing the feature.
-2. Run the script `.specify/scripts/create-new-feature.sh --json --title "$TITLE" --requirement "$ARGUMENTS" --raw` from repo root and parse its JSON output for BRANCH_NAME and SPEC_FILE. All file paths must be absolute.
-2. Load `.cwai/templates/templates/raw-design.md` to understand required sections.
-3. Write the specification to `${FEATURE_FOLDER}/raw-design.md` using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
-4. Report completion with branch name, spec file path, and readiness for the next phase.
-
-Note: The script creates and checks out the new branch and initializes the spec file before writing.
-
----
-
-Use concise language, avoid repetition, and ensure clarity.
-Use Github Markdown format for the specification file.
-Use MermaidJs for diagrams.
-
----
+1. Run the script: `.cwai/scripts/create-feature.sh "$ARGUMENTS" --json --raw` and extract output BRANCH_NAME, FEATURE_FOLDER, FEATURE_ID
+2. If the requirement is to refactor an existing design, load the existing design file at `${FEATURE_FOLDER}/raw-design.md` to fully understand the existing design.
+3. If the requirement is a new one, load `.cwai/templates/game-design.md` to understand the game design structure.
+4. Write the new design to `${FEATURE_FOLDER}/raw-design.md` with a fresh Game Design Document using the structure from `game-design.md` (GitHub Markdown). Do not append.
+5. Report completion with branch name, spec file path, and readiness for the next phase.
