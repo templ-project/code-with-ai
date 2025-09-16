@@ -134,28 +134,45 @@ get_highest_existing_id() {
 }
 
 get_next_feature_id() {
-  local counter=1 highest_existing max_from_counter
-  local counter_file="${SPECS_DIR}/.feature_counter"
-
-  if [[ -f "${counter_file}" ]]; then
-    max_from_counter=$(cat "${counter_file}" 2>/dev/null || echo 0)
-    if [[ "${max_from_counter}" -gt 0 ]]; then
-      counter=$((max_from_counter + 1))
+  local counter=1 highest_existing ref_counter
+  
+  ensure_git_repo
+  
+  # Try to get counter from git ref (cross-platform, multi-computer safe)
+  # This ref syncs automatically with git push/pull
+  if git show-ref --verify --quiet refs/feature-counter; then
+    ref_counter=$(git show refs/feature-counter 2>/dev/null | head -1 || echo 0)
+    if [[ "$ref_counter" =~ ^[0-9]+$ ]] && [[ "$ref_counter" -gt 0 ]]; then
+      counter=$((ref_counter + 1))
     fi
   fi
-
+  
+  # Always check existing branches/folders as safety net
+  # This handles cases where refs might be out of sync temporarily
   highest_existing=$(get_highest_existing_id)
-  if [[ "${highest_existing}" -ge "${counter}" ]]; then
+  if [[ "$highest_existing" -ge "$counter" ]]; then
     counter=$((highest_existing + 1))
   fi
-
-  printf "%05d" "${counter}"
+  
+  printf "%05d" "$counter"
 }
 
 save_feature_id() {
-  local id="$1" counter_file="${SPECS_DIR}/.feature_counter"
+  local id="$1"
+  
+  ensure_git_repo
+  
+  # Store in git ref for cross-platform, multi-computer compatibility
+  # This ref will sync automatically with git push/pull
+  echo "$id" | git hash-object -w --stdin | \
+    xargs git update-ref refs/feature-counter
+  
+  # Optional: Also store locally for immediate fallback (not committed)
+  local counter_file="${SPECS_DIR}/.feature_counter"
   mkdir -p "${SPECS_DIR}"
-  echo "${id}" > "${counter_file}"
+  echo "$id" > "${counter_file}"
+  
+  log "Feature ID $id saved to git ref (syncs across computers)"
 }
 
 ########################################
@@ -185,15 +202,17 @@ create_feature_branch() {
 # Template wrapper (skip overwrite default)
 ########################################
 copy_templates_wrapper() {
-  local feature_dir="$1" use_raw="$2" use_hld="$3" use_lld="$4"
-  copy_templates "${feature_dir}" skip "${use_raw}" "${use_hld}" "${use_lld}"
+  local feature_dir="$1"
+  shift
+  local templates=("$@")
+  copy_templates "${feature_dir}" skip "${templates[@]}"
 }
 
 ########################################
 # Output helpers
 ########################################
 output_results_create() {
-  local feature_name="$1" feature_dir="$2" branch_created="$3" current_branch="$4" feature_id="$5" title="$6" requirement="$7" output_json_flag="$8"
+  local feature_name="$1" feature_dir="$2" branch_created="$3" current_branch="$4" issue_number="$5" title="$6" requirement="$7" output_json_flag="$8"
   shift 8
   local copied_files=("$@")
 
@@ -208,7 +227,7 @@ output_results_create() {
   "MODE": "create",
   "BRANCH_NAME": "${current_branch}",
   "FEATURE_FOLDER": "${feature_dir}",
-  "FEATURE_ID": "${feature_id}",
+  "ISSUE_NUMBER": "${issue_number}",
   "TITLE": "${title}",
   "REQUIREMENT": "${requirement}",
   "COPIED_TEMPLATES": ${files_json}
@@ -219,18 +238,19 @@ EOF
 
   echo "✅ Feature created successfully!"; echo
   echo "📁 Feature Details:"; echo "   Name: ${feature_name}"; echo "   Directory: ${feature_dir}"; echo "   Title: ${title}"; echo "   Requirement: ${requirement}"; echo
+  echo "🐙 GitHub Issue:"; echo "   Issue #${issue_number}"; echo "   URL: https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/${issue_number}"; echo
   echo "🌿 Git Branch:"; echo "   Current branch: ${current_branch}"; if [[ "${branch_created}" == "true" ]]; then echo "   ✅ Created new branch: ${feature_name}"; else echo "   ℹ️  Using existing branch"; fi; echo
   if (( ${#copied_files[@]:-0} > 0 )); then
     echo "📄 Copied Templates:"; for f in "${copied_files[@]}"; do echo "   ✅ ${f}"; done
   else
-    echo "📄 No templates copied (use --raw, --hld, or --lld flags)"
+    echo "📄 No templates copied (use --template flag to copy templates)"
   fi; echo
-  echo "🔧 Environment Variables:"; echo "   BRANCH_NAME=${current_branch}"; echo "   FEATURE_FOLDER=${feature_dir}"; echo "   FEATURE_ID=${feature_id}";
+  echo "🔧 Environment Variables:"; echo "   BRANCH_NAME=${current_branch}"; echo "   FEATURE_FOLDER=${feature_dir}"; echo "   ISSUE_NUMBER=${issue_number}";
 }
 
 output_results_update() {
-  local feature_name="$1" feature_dir="$2" feature_id="$3" output_json_flag="$4"
-  shift 4
+  local feature_name="$1" feature_dir="$2" feature_id="$3" issue_number="$4" output_json_flag="$5"
+  shift 5
   local copied_files=("$@")
   local current_branch
   current_branch=$(git branch --show-current)
@@ -247,31 +267,35 @@ output_results_update() {
   "BRANCH_NAME": "${current_branch}",
   "FEATURE_FOLDER": "${feature_dir}",
   "FEATURE_ID": "${feature_id}",
+  "ISSUE_NUMBER": "${issue_number}",
   "COPIED_TEMPLATES": ${files_json}
 }
 EOF
     return 0
   fi
 
-  echo "✅ Feature detected successfully!"; echo
+  echo "✅ Feature updated successfully!"; echo
   echo "📁 Feature Details:"; echo "   Name: ${feature_name}"; echo "   Directory: ${feature_dir}"; echo "   Feature ID: ${feature_id}"; echo
+  echo "🐙 GitHub Issue:"; echo "   Issue #${issue_number}"; echo "   URL: https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/${issue_number}"; echo
   echo "🌿 Git Branch:"; echo "   Current branch: ${current_branch}"; echo "   (Switched to existing branch)"; echo
   if (( ${#copied_files[@]:-0} > 0 )); then
     echo "📄 Copied Templates:"; for f in "${copied_files[@]}"; do echo "   ✅ ${f}"; done
   else
-    echo "📄 No templates copied (use --raw, --hld, --lld flags)"; fi; echo
-  echo "🔧 Environment Variables:"; echo "   BRANCH_NAME=${current_branch}"; echo "   FEATURE_FOLDER=${feature_dir}"; echo "   FEATURE_ID=${feature_id}";
+    echo "📄 No templates copied (use --template flag to copy templates)"; fi; echo
+  echo "🔧 Environment Variables:"; echo "   BRANCH_NAME=${current_branch}"; echo "   FEATURE_FOLDER=${feature_dir}"; echo "   ISSUE_NUMBER=${issue_number}";
 }
 
 
 ########################################
 # Template copying
-# Usage: copy_templates <feature_dir> <mode> <use_raw> <use_hld> <use_lld>
+# Usage: copy_templates <feature_dir> <mode> <template1> <template2> ...
 #   mode: overwrite | skip
 # Outputs copied filenames (one per line) to stdout for capture via mapfile.
 ########################################
 copy_templates() {
-  local feature_dir="$1" mode="$2" use_raw="$3" use_hld="$4" use_lld="$5"
+  local feature_dir="$1" mode="$2"
+  shift 2
+  local templates=("$@")
   local copied_files=()
 
   local want_overwrite=false
@@ -280,31 +304,53 @@ copy_templates() {
   fi
 
   do_copy_template() {
-    local src="$1" dest_name="$2"
-    local dest_path="${feature_dir}/${dest_name}"
+    local template_name="$1"
+    local src_file dest_file
+    
+    # Map short names to full filenames
+    case "$template_name" in
+      "raw-design"|"raw")
+        src_file="${TEMPLATES_DIR}/raw-design.md"
+        dest_file="raw-design.md"
+        ;;
+      "high-level-design"|"hld")
+        src_file="${TEMPLATES_DIR}/high-level-design.md"
+        dest_file="high-level-design.md"
+        ;;
+      "low-level-design"|"lld")
+        src_file="${TEMPLATES_DIR}/low-level-design.md"
+        dest_file="low-level-design.md"
+        ;;
+      "game-design"|"game")
+        src_file="${TEMPLATES_DIR}/game-design.md"
+        dest_file="game-design.md"
+        ;;
+      *)
+        # Try exact filename match
+        src_file="${TEMPLATES_DIR}/${template_name}"
+        dest_file="$(basename "$template_name")"
+        ;;
+    esac
+    
+    local dest_path="${feature_dir}/${dest_file}"
 
-    if [[ ! -f "${src}" ]]; then
-      error_exit "Template file ${dest_name} not found in ${TEMPLATES_DIR}"
+    if [[ ! -f "${src_file}" ]]; then
+      error_exit "Template file '${template_name}' not found. Available: raw-design, high-level-design, low-level-design, game-design"
     fi
 
     if [[ -f "${dest_path}" && "${want_overwrite}" == "false" ]]; then
-      log "ℹ️  ${dest_name} already exists; skipping"
+      log "ℹ️  ${dest_file} already exists; skipping"
       return 0
     fi
 
-    cp "${src}" "${dest_path}"
-    copied_files+=("${dest_name}")
+    cp "${src_file}" "${dest_path}"
+    copied_files+=("${dest_file}")
   }
 
-  if [[ "${use_raw}" == "true" ]]; then
-    do_copy_template "${TEMPLATES_DIR}/raw-design.md" "raw-design.md"
-  fi
-  if [[ "${use_hld}" == "true" ]]; then
-    do_copy_template "${TEMPLATES_DIR}/high-level-design.md" "high-level-design.md"
-  fi
-  if [[ "${use_lld}" == "true" ]]; then
-    do_copy_template "${TEMPLATES_DIR}/low-level-design.md" "low-level-design.md"
-  fi
+  # Copy each requested template
+  for template in "${templates[@]}"; do
+    do_copy_template "$template"
+  done
 
   # Safely print only if any copied (avoid unbound issues under older bash with set -u)
   if (( ${#copied_files[@]:-0} > 0 )); then
