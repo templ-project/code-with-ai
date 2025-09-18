@@ -38,31 +38,10 @@ Authoring
 
 ---
 
-Feature Branch Definition: string name `#####-*` where `#####` is a unique numeric feature ID and `*` is a short descriptive slug (e.g., `12345-new-card-game` / regex: `/([0-9]{5}-[a-z0-9][a-z0-9-]*)/`).
-
----
-
 Given the feature description provided as an argument, do this:
 
-1. Detect Mode
-   - If input contains a feature branch name (`#####-*`), set FEATURE_BRANCH and proceed in Existing Feature mode.
-   - Otherwise proceed in New Feature mode.
-2. Fetch or Create
-   - Existing Feature mode:
-     - Run: `.cwai/scripts/detect-feature.sh --json --feature "$FEATURE_BRANCH" --hld`
-     - If this fails → error out and stop.
-   - New Feature mode:
-     - Derive a concise game title (max 5 words). Title Case. Remove filler words.
-     - Run: `.cwai/scripts/create-feature.sh --json --title "$TITLE" --requirement "$ARGUMENTS" --hld`
-3. Extract Output
-   - Parse JSON: BRANCH_NAME, FEATURE_FOLDER, FEATURE_ID (if new feature)
-   - Set: `RAW_SPEC_PATH = ${FEATURE_FOLDER}/high-level-design.md` (absolute, points to design file)
-4. Write / Refactor
-   - Existing Feature mode:
-     - Load current `${RAW_SPEC_PATH}` (if missing, treat as empty) and refactor/enhance to incorporate new requirements while preserving the canonical structure below.
-   - New Feature mode:
-     - Overwrite `${RAW_SPEC_PATH}` with a fresh Game Design Document using the structure from `game-design.md` (GitHub Markdown). Do not append.
-5. Output
-   - If New Feature mode: output JSON line `{ "status": "ready", "branch": BRANCH_NAME, "feature_id": FEATURE_ID, "spec": RAW_SPEC_PATH }`
-   - If Existing Feature mode: output JSON line `{ "status": "updated", "spec": RAW_SPEC_PATH }`
-   - Then one human summary line: `Game design created: <Title>`
+1. Run the script: `.cwai/scripts/create-feature.sh "$ARGUMENTS" --json --template game --label high-level` and extract output BRANCH_NAME, FEATURE_FOLDER, FEATURE_ID
+2. Load the original design template `.cwai/templates/high-level-design.md` to understand the game design structure.
+3. If the requirement is to refactor, load also the existing design file at `${FEATURE_FOLDER}/high-level-design.md` to fully understand what was agreed already.
+4. Write the new design to `${FEATURE_FOLDER}/high-level-design.md` with a fresh Game Design Document using the structure from the original design template (GitHub Markdown). Do not append.
+5. Report completion with branch name, spec file path, and readiness for the next phase.

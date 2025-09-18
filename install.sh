@@ -53,11 +53,11 @@ COLOR_CYAN='\033[0;36m'
 
 log() { printf "%b[INFO ]%b %s\n" "${COLOR_CYAN}" "${COLOR_RESET}" "$*"; }
 warn() { printf "%b[WARN ]%b %s\n" "${COLOR_YELLOW}" "${COLOR_RESET}" "$*"; }
-err()  { printf "%b[ERROR]%b %s\n" "${COLOR_RED}" "${COLOR_RESET}" "$*" 1>&2; }
+err() { printf "%b[ERROR]%b %s\n" "${COLOR_RED}" "${COLOR_RESET}" "$*" 1>&2; }
 success() { printf "%b[SUCCESS]%b %s\n" "${COLOR_GREEN}" "${COLOR_RESET}" "$*"; }
 
 usage() {
-  cat <<EOF
+  cat << EOF
 code-with-ai installer
 
 Installs .cwai and .github/prompts into an existing project.
@@ -84,33 +84,51 @@ FORCE_ALL=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -h|--help)
-      usage; exit 0;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
     --repo)
-      shift || { err "--repo requires a value"; exit 1; }
-      REPO_URL="$1";;
+      shift || {
+        err "--repo requires a value"
+        exit 1
+      }
+      REPO_URL="$1"
+      ;;
     --force)
-      FORCE=true;;
+      FORCE=true
+      ;;
     --force-all)
-      FORCE_ALL=true; FORCE=true;;
+      FORCE_ALL=true
+      FORCE=true
+      ;;
     --*)
-      err "Unknown option: $1"; usage; exit 1;;
+      err "Unknown option: $1"
+      usage
+      exit 1
+      ;;
     *)
       if [[ -z "$TARGET_DIR" ]]; then
         TARGET_DIR="$1"
       else
-        err "Multiple target directories specified: $TARGET_DIR and $1"; usage; exit 1
-      fi;;
+        err "Multiple target directories specified: $TARGET_DIR and $1"
+        usage
+        exit 1
+      fi
+      ;;
   esac
   shift || true
 done
 
 if [[ -z "$TARGET_DIR" ]]; then
-  err "Target project path is required"; usage; exit 1
+  err "Target project path is required"
+  usage
+  exit 1
 fi
 
 if [[ ! -d "$TARGET_DIR" ]]; then
-  err "Target directory does not exist: $TARGET_DIR"; exit 1
+  err "Target directory does not exist: $TARGET_DIR"
+  exit 1
 fi
 
 abs_path() {
@@ -145,14 +163,19 @@ if [[ -e "$SCRIPT_DIR/.git" ]]; then
   log "Using local git repository as source: $SOURCE_ROOT"
 else
   log "No .git found adjacent to installer; cloning repository..."
-  command -v git >/dev/null 2>&1 || { err "git is required but not found in PATH"; exit 3; }
-  TEMP_DIR="$(mktemp -d 2>/dev/null || mktemp -d -t codewithai)"
+  command -v git > /dev/null 2>&1 || {
+    err "git is required but not found in PATH"
+    exit 3
+  }
+  TEMP_DIR="$(mktemp -d 2> /dev/null || mktemp -d -t codewithai)"
   log "Cloning $REPO_URL into $TEMP_DIR"
-  if ! git clone --depth 1 "$REPO_URL" "$TEMP_DIR" >/dev/null 2>&1; then
-    err "Failed to clone repository: $REPO_URL"; exit 3
+  if ! git clone --depth 1 "$REPO_URL" "$TEMP_DIR" > /dev/null 2>&1; then
+    err "Failed to clone repository: $REPO_URL"
+    exit 3
   fi
   if [[ ! -d "$TEMP_DIR/.cwai" || ! -d "$TEMP_DIR/.github/prompts" ]]; then
-    err "Repository clone missing required directories (.cwai or .github/prompts)"; exit 3
+    err "Repository clone missing required directories (.cwai or .github/prompts)"
+    exit 3
   fi
   SOURCE_ROOT="$TEMP_DIR"
 fi
@@ -189,7 +212,7 @@ copy_dir() {
     mkdir -p "$(dirname "$dest")"
   fi
 
-  if command -v rsync >/dev/null 2>&1; then
+  if command -v rsync > /dev/null 2>&1; then
     # Build option list first to avoid unbound array issues under set -u
     local rsync_opts=(-a)
     if [[ -d "$dest" && $FORCE_ALL == true ]]; then

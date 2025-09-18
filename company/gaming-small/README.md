@@ -62,7 +62,9 @@ Studio Head (CEO/Founder)
 
 #### Game Designer / Creative Director
 
-> **[The visionary](./game-designer.md)** who decides "What if the sword… was also a spaceship?" Also handles game mechanics, balancing, and feature specifications.
+> **[The visionary](../../.github/prompts/design-game.prompt.md)** who decides "What if the sword… was also a spaceship?" Also handles game mechanics, balancing, and feature specifications.
+>
+> **Prompt**: `/design-game`
 
 - Detailed game mechanics discussions
 - Feature specifications
@@ -78,7 +80,9 @@ Studio Head (CEO/Founder)
 
 #### Lead Programmer / Technical Director
 
-> **[The code wizard](./lead-programmer.md)** who makes the spaceship-sword work (and fixes everyone else's code when it doesn't).
+> **[The code wizard](../../.github/prompts/design-hld.prompt.md)** who makes the spaceship-sword work (and fixes everyone else's code when it doesn't).
+>
+> **Prompt**: `/design-hld`
 
 - Detailed game mechanics discussions
 - Feature specifications

@@ -3,4 +3,10 @@ npx prettier --write ./**/*.md
 
 npx eslint --fix --stats --no-warn-ignored ./**/*.md
 
+find ./scripts -iname "*.sh" | while read f; do 
+    echo "Formatting $f"
+    shfmt -i 2 -ci -bn -sr -w "$f"
+    shellcheck -x --severity=style --format=tty "$f"
+done
+
 git add .
