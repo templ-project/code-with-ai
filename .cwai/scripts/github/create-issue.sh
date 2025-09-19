@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Create GitHub Issue/Task Script
-# Follows Google Bash Style Guide: https://google.github.io/styleguide/shellguide.html
 
 set -euo pipefail
 
@@ -9,12 +8,13 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
+source "${SCRIPT_DIR}/../common/log.sh"
+
 # Source GitHub common helpers
 source "${SCRIPT_DIR}/../common/env.sh"
-
 load_environment "$REPO_ROOT"
 
-source "${SCRIPT_DIR}/../common/log.sh"
+source "${SCRIPT_DIR}/../common/strings.sh"
 source "${SCRIPT_DIR}/../common/${ISSUE_MANAGER:-github}.sh"
 
 # Initialize environment early to load configuration
@@ -30,7 +30,7 @@ task_body=""
 
 # Function to display usage
 usage() {
-  cat << EOF
+  cat <<EOF
 Usage: $0 [OPTIONS] <task_body>
 
 Create a GitHub issue/task with optional parent relationship and project assignment.
@@ -60,38 +60,38 @@ EOF
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --parent | -p)
-      parent_issue="$2"
-      shift 2
-      ;;
-    --title | -t)
-      title="$2"
-      shift 2
-      ;;
-    --labels | -L)
-      labels="$2"
-      shift 2
-      ;;
-    --json)
-      output_json=true
-      shift
-      ;;
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    -*)
-      error_exit "Unknown option: $1. Use --help for usage information."
-      ;;
-    *)
-      # All remaining arguments are part of the task body
-      if [[ -n "$task_body" ]]; then
-        task_body="$task_body $1"
-      else
-        task_body="$1"
-      fi
-      shift
-      ;;
+  --parent | -p)
+    parent_issue="$2"
+    shift 2
+    ;;
+  --title | -t)
+    title="$2"
+    shift 2
+    ;;
+  --labels | -L)
+    labels="$2"
+    shift 2
+    ;;
+  --json)
+    output_json=true
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  -*)
+    error_exit "Unknown option: $1. Use --help for usage information."
+    ;;
+  *)
+    # All remaining arguments are part of the task body
+    if [[ -n "$task_body" ]]; then
+      task_body="$task_body $1"
+    else
+      task_body="$1"
+    fi
+    shift
+    ;;
   esac
 done
 
@@ -116,60 +116,35 @@ if [[ -z "${title}" ]]; then
   fi
 fi
 
-# Parse labels into array
-declare -a label_array=()
-if [[ -n "${labels}" ]]; then
-  IFS=',' read -ra label_array <<< "${labels}"
-  # Trim whitespace from each label
-  for i in "${!label_array[@]}"; do
-    label_array[i]=$(echo "${label_array[i]}" | xargs)
-  done
-fi
-
-# Create the issue
-log_info "🚀 Creating task: ${title}"
-
 # Create GitHub issue
-if ((${#label_array[@]} > 0)); then
-  issue_number=$(create_issue "$title" "$task_body" "${label_array[@]}")
-else
-  issue_number=$(create_issue "$title" "$task_body")
-fi
+issue_number=$(issue_create "$title" "$task_body" "$labels")
 
 # Validate issue creation succeeded
 if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
   error_exit "Failed to create GitHub issue. Check your authentication and repository access."
 fi
-
-log_info "✅ Created GitHub issue #$issue_number"
+log_info "✅ Created GitHub issue (#$issue_number) $title"
 
 # Add to project if specified
 if [[ -n "$GH_PROJECT" ]]; then
-  project_add_issue "$issue_number" "$GH_PROJECT" "$GH_OWNER"
+  issue_ensure_project "$issue_number" "$GH_PROJECT" "$GH_OWNER"
 fi
 
 # Add parent relationship if specified
 if [[ -n "${parent_issue}" ]]; then
-  update_issue_parent "$issue_number" "$parent_issue"
+  issue_ensure_parent "$issue_number" "$parent_issue"
 fi
 
+# Parse labels into array for JSON output
+IFS=',' read -ra label_array <<<"${labels}"
+
 # Output results
-if [[ "${output_json}" == "true" ]]; then
-  cat << EOF
-{
-  "ISSUE_NUMBER": $issue_number,
-  "ISSUE_TITLE": "$title",
-  "ISSUE_LABELS": [$(printf '"%s",' "${label_array[@]}" | sed 's/,$//')]",
-  "ISSUE_PARENT": "${parent_issue:-null}",
-  "ISSUE_PROJECT": "${GH_PROJECT:-null}",
-  "ISSUE_URL": "https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/$issue_number"
-}
-EOF
-else
-  echo "   ISSUE_NUMBER=${issue_number}"
-  echo "   ISSUE_TITLE=\"${title}\""
-  echo "   ISSUE_LABELS=\"${labels}\""
-  echo "   ISSUE_PARENT=\"${parent_issue:-}\""
-  echo "   ISSUE_PROJECT=\"${GH_PROJECT:-}\""
-  echo "   ISSUE_URL=\"https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/${issue_number}\""
-fi
+output="{
+  \"ISSUE_NUMBER\": $issue_number,
+  \"ISSUE_TITLE\": \"$title\",
+  \"ISSUE_LABELS\": [$(printf '\"%s\",' "${label_array[@]}" | sed 's/,$//')],
+  \"ISSUE_PARENT\": \"${parent_issue:-null}\",
+  \"ISSUE_PROJECT\": \"${GH_PROJECT:-null}\",
+  \"ISSUE_URL\": \"https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/$issue_number\"
+}"
+output_results "$output" "$output_json"
