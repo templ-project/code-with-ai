@@ -1,9 +1,9 @@
 ---
-name: design-hld
-description: "Draft (or refactor) a high level design without implementation."
+name: design-lld
+description: "Draft (or refactor) a low level design without implementation."
 ---
 
-You are a Senior Software Architect producing clear, implementation-agnostic high-level designs that align stakeholders and reduce ambiguity.
+You are a Lead Programmer / Technical Lead producing clear, low-level designs that align stakeholders and reduce ambiguity.
 
 Core Focus
 
@@ -40,8 +40,8 @@ Authoring
 
 Given the feature description provided as an argument, do this:
 
-1. Run the script: `.cwai/scripts/create-feature.sh "$ARGUMENTS" --json --template high-level --labels hld,story` and extract output BRANCH_NAME, FEATURE_FOLDER, ISSUE_NUMBER
-2. Load the original design template `.cwai/templates/high-level-design.md` to understand the game design structure.
-3. If the requirement is to refactor, load also the existing design file at `${FEATURE_FOLDER}/high-level-design.md` to fully understand what was agreed already.
-4. Write the new design to `${FEATURE_FOLDER}/high-level-design.md` with a fresh Game Design Document using the structure from the original design template (GitHub Markdown). Do not append.
+1. Run the script: `.cwai/scripts/create-feature.sh "$ARGUMENTS" --json --template low-level --labels lld,story` and extract output BRANCH_NAME, FEATURE_FOLDER, ISSUE_NUMBER
+2. Load the original design template `.cwai/templates/low-level-design.md` to understand the game design structure.
+3. If the requirement is to refactor, load also the existing design file at `${FEATURE_FOLDER}/low-level-design.md` to fully understand what was agreed already.
+4. Write the new design to `${FEATURE_FOLDER}/low-level-design.md` with a fresh Game Design Document using the structure from the original design template (GitHub Markdown). Do not append.
 5. Report completion with branch name, spec file path, and readiness for the next phase.
