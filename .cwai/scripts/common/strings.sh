@@ -15,17 +15,21 @@ extract_feature_id() {
 # Get first 5 words from requirement as title
 requirement_to_title() {
   local requirement="$1"
-  echo "$requirement" \
-    | tr '\n' ' ' \
-    | sed 's/[^A-Za-z0-9_-]/ /g' \
-    | awk '{ for(i=1;i<=NF && i<=5;i++){ printf("%s ", $i) } }' | sed 's/ *$//'
+  echo "$requirement" |
+    tr '\n' ' ' |
+    sed 's/[^A-Za-z0-9_-]/ /g' |
+    awk '{ for(i=1;i<=NF && i<=5;i++){ printf("%s ", $i) } }' | sed 's/ *$//'
 }
 
 # Convert title to URL-friendly slug
 title_to_slug() {
   local title="$1"
-  echo "$title" | tr '[:upper:]' '[:lower:]' \
-    | sed 's/[^a-z0-9]/-/g' | sed 's/-\{2,\}/-/g' | sed 's/^-\|-$//g'
+  echo "$title" | tr '[:upper:]' '[:lower:]' |
+    sed 's/[^a-z0-9]/-/g' | sed 's/-\{2,\}/-/g' | sed 's/^-\|-$//g'
+}
+
+padded_feature_id() {
+  printf "%05d" "$1"
 }
 
 # Output JSON or key=value format
@@ -35,8 +39,8 @@ output_results() {
   if [ "$output_json_flag" = "true" ]; then
     echo "$json_result"
   else
-    echo "$json_result" \
-      | jq -r 'to_entries[] | "\(.key)=\"\(if (.value | type) == "array" then (.value | join(",")) else .value end)\""'
+    echo "$json_result" |
+      jq -r 'to_entries[] | "\(.key)=\"\(if (.value | type) == "array" then (.value | join(",")) else .value end)\""'
   fi
 }
 
@@ -45,14 +49,14 @@ requirement_to_feature_branch() {
   local requirement="$1"
   local feature_branch
   feature_branch=$(echo "$requirement" | grep -oE '([0-9]{5}-[a-z0-9][a-z0-9-]*)' | head -n 1 || true)
-  
+
   if [[ -n "$feature_branch" ]] && command -v git_branch_exists >/dev/null 2>&1; then
     if git_branch_exists "$feature_branch"; then
       echo "$feature_branch"
       return 0
     fi
   fi
-  
+
   echo ""
 }
 
@@ -80,3 +84,4 @@ generate_hex_color() {
   # Final fallback: return default blue color
   echo "1F77B4"
 }
+

@@ -10,228 +10,218 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 readonly TEMPLATES_DIR="${REPO_ROOT}/.cwai/templates"
 
-source "${SCRIPT_DIR}/common/log.sh"
+source "${SCRIPT_DIR}/common/common.sh"
 
-# Source GitHub common helpers
-source "${SCRIPT_DIR}/common/env.sh"
-load_environment "$REPO_ROOT"
+# # Default values / flags
+# output_json=false
+# requirement=""
+# templates=()
+# labels=""
+# title=""
 
-ISSUE_MANAGER=${ISSUE_MANAGER:-github}
+# # Function to display usage
+# usage() {
+#   cat <<EOF
+# Usage: $0 <requirement> [OPTIONS]
 
-# Source common helpers
-source "${SCRIPT_DIR}/common/strings.sh"
-source "${SCRIPT_DIR}/common/git.sh"
+# Required arguments:
+#     <requirement>           Feature requirement description
 
-# Default values / flags
-output_json=false
-requirement=""
-templates=()
-labels=""
-title=""
+# Optional arguments:
+#   --json                  Output data as JSON instead of text
+#   --title <title>         Explicit title for the feature (auto-generated from requirement if not provided)
+#   --template|-t <name>    Template to copy (can be used multiple times)
+#                           Available: raw-design (raw), high-level-design (hld), low-level-design (lld), game-design (game)
+#   --labels|-l <label>     Label to add to GitHub issue (comma separated)
+#                           Use -<label> to remove a label (e.g., -development)
 
-# Function to display usage
-usage() {
-  cat <<EOF
-Usage: $0 <requirement> [OPTIONS]
+# Examples:
+#     $0 "Users need to login securely" --template high-level-design --label authentication --label security
+#     $0 "00012-user-authentication Add MFA support" --template low-level-design --label -development --json
+#     $0 "Add user dashboard" --title "User Dashboard Feature" --template raw-design --template game-design
+# EOF
+# }
 
-Required arguments:
-    <requirement>           Feature requirement description
+# while [[ $# -gt 0 ]]; do
+#   case $1 in
+#   --json)
+#     output_json=true
+#     shift
+#     ;;
+#   --title)
+#     title="$2"
+#     shift 2
+#     ;;
+#   --template | -t)
+#     templates+=("$2")
+#     shift 2
+#     ;;
+#   --labels | -l)
+#     labels="$2"
+#     shift 2
+#     ;;
+#   -h | --help)
+#     usage
+#     exit 0
+#     ;;
+#   -*)
+#     log_error "Unknown option: $1. Use --help for usage information."
+#     ;;
+#   *)
+#     if [[ -n "$requirement" ]]; then
+#       requirement="$requirement $1"
+#     else
+#       requirement="$1"
+#     fi
+#     shift
+#     ;;
+#   esac
+# done
 
-Optional arguments:
-  --json                  Output data as JSON instead of text
-  --title <title>         Explicit title for the feature (auto-generated from requirement if not provided)
-  --template|-t <name>    Template to copy (can be used multiple times)
-                          Available: raw-design (raw), high-level-design (hld), low-level-design (lld), game-design (game)
-  --labels|-l <label>     Label to add to GitHub issue (comma separated)
-                          Use -<label> to remove a label (e.g., -development)
+# # Validate required arguments
+# if [[ -z "${requirement}" ]]; then
+#   log_error "Requirement is required. Provide the requirement as arguments."
+# fi
 
-Examples:
-    $0 "Users need to login securely" --template high-level-design --label authentication --label security
-    $0 "00012-user-authentication Add MFA support" --template low-level-design --label -development --json
-    $0 "Add user dashboard" --title "User Dashboard Feature" --template raw-design --template game-design
-EOF
-}
+# #########################################
+# ## Output helpers
+# #########################################
+# output_feature_results() {
+#   local feature_name="$1" feature_dir="$2" current_branch="$3" issue_number="$4" title="$5" requirement="$6" output_json_flag="$7" copied_files="$8"
 
-while [[ $# -gt 0 ]]; do
-  case $1 in
-  --json)
-    output_json=true
-    shift
-    ;;
-  --title)
-    title="$2"
-    shift 2
-    ;;
-  --template | -t)
-    templates+=("$2")
-    shift 2
-    ;;
-  --labels | -l)
-    labels="$2"
-    shift 2
-    ;;
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  -*)
-    log_error "Unknown option: $1. Use --help for usage information."
-    ;;
-  *)
-    if [[ -n "$requirement" ]]; then
-      requirement="$requirement $1"
-    else
-      requirement="$1"
-    fi
-    shift
-    ;;
-  esac
-done
+#   copied_files=${copied_files%,} # Remove trailing comma if any
 
-# Validate required arguments
-if [[ -z "${requirement}" ]]; then
-  log_error "Requirement is required. Provide the requirement as arguments."
-fi
+#   local output="{
+#  \"BRANCH_NAME\": \"${current_branch}\",
+#  \"FEATURE_FOLDER\": \"${feature_dir}\",
+#  \"ISSUE_NUMBER\": \"${issue_number}\",
+#  \"TITLE\": \"${title}\",
+#  \"REQUIREMENT\": \"${requirement}\",
+#  \"COPIED_TEMPLATES\": [\"$(echo ${copied_files//,/\",\"})\"]
+# }"
 
-#########################################
-## Output helpers
-#########################################
-output_feature_results() {
-  local feature_name="$1" feature_dir="$2" current_branch="$3" issue_number="$4" title="$5" requirement="$6" output_json_flag="$7" copied_files="$8"
+#   output_results "$output" "$output_json_flag"
+# }
 
-  copied_files=${copied_files%,} # Remove trailing comma if any
+# #########################################
+# ## Template helpers
+# #########################################
+# copy_templates() {
+#   local feature_dir="$1"
+#   local copied_files=""
 
-  local output="{
- \"BRANCH_NAME\": \"${current_branch}\",
- \"FEATURE_FOLDER\": \"${feature_dir}\",
- \"ISSUE_NUMBER\": \"${issue_number}\",
- \"TITLE\": \"${title}\",
- \"REQUIREMENT\": \"${requirement}\",
- \"COPIED_TEMPLATES\": [\"$(echo ${copied_files//,/\",\"})\"]
-}"
+#   if [[ ${#templates[@]} -gt 0 ]]; then
+#     local template_file
+#     while IFS= read -r template; do
+#       template_file=$TEMPLATES_DIR/${template}-design.md
+#       if [ -f "$template_file" ]; then
+#         cp "$template_file" "$feature_dir/" &&
+#           copied_files="${copied_files}${template}-design.md," &&
+#           log_info "📄 Copied template: ${template}-design.md"
+#       else
+#         log_warn "Template '${template}' not found in ${TEMPLATES_DIR}"
+#       fi
+#     done < <(printf '%s\n' "${templates[@]}")
+#   else
+#     log_info "ℹ️  No templates specified. Only creating directory structure."
+#   fi
+#   echo "$copied_files"
+# }
 
-  output_results "$output" "$output_json_flag"
-}
+# # Main execution
+# create_new_feature() {
+#   local req="$1"
+#   local feature_title feature_slug issue_number feature_name feature_dir
 
-#########################################
-## Template helpers
-#########################################
-copy_templates() {
-  local feature_dir="$1"
-  local copied_files=""
+#   # Determine title
+#   feature_title="$title"
+#   if [[ -z "$title" ]]; then
+#     feature_title=$(requirement_to_title "$req")
+#   fi
 
-  if [[ ${#templates[@]} -gt 0 ]]; then
-    local template_file
-    while IFS= read -r template; do
-      template_file=$TEMPLATES_DIR/${template}-design.md
-      if [ -f "$template_file" ]; then
-        cp "$template_file" "$feature_dir/" &&
-          copied_files="${copied_files}${template}-design.md," &&
-          log_info "📄 Copied template: ${template}-design.md"
-      else
-        log_warn "Template '${template}' not found in ${TEMPLATES_DIR}"
-      fi
-    done < <(printf '%s\n' "${templates[@]}")
-  else
-    log_info "ℹ️  No templates specified. Only creating directory structure."
-  fi
-  echo "$copied_files"
-}
+#   # Create GitHub issue first to get the ID
+#   issue_number=$($SCRIPT_DIR/issues/$CWAI_ISSUE_MANAGER/create.sh --title "$feature_title" --labels "$labels" --json "$req" | jq -r '.ISSUE_NUMBER // ""')
 
-# Main execution
-create_new_feature() {
-  local req="$1"
-  local feature_title feature_slug issue_number feature_name feature_dir
+#   # Validate issue creation succeeded
+#   if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
+#     log_error "Failed to create GitHub issue. Check your authentication and repository access."
+#   fi
+#   log_info "✅ Created GitHub issue #$issue_number"
 
-  # Determine title
-  feature_title="$title"
-  if [[ -z "$title" ]]; then
-    feature_title=$(requirement_to_title "$req")
-  fi
+#   # Build feature identifiers using issue number
+#   feature_slug=$(title_to_slug "$feature_title")
+#   feature_name=$(printf "%05d" "$issue_number")-${feature_slug}
+#   feature_dir="$REPO_ROOT/${CWAI_SPECS_FOLDER}/${feature_name}"
+#   log_info "🚀 Creating feature: ${feature_name}"
 
-  # Create GitHub issue first to get the ID
-  issue_number=$($SCRIPT_DIR/issues/$CWAI_ISSUE_MANAGER/create.sh --title "$feature_title" --labels "$labels" --json "$req" | jq -r '.ISSUE_NUMBER // ""')
+#   # Create and switch to feature branch
+#   git checkout -b "${feature_name}" >/dev/null 2>&1 || log_error "Failed to create branch ${feature_name}"
+#   log_info "Created new branch: ${feature_name}"
 
-  # Validate issue creation succeeded
-  if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
-    log_error "Failed to create GitHub issue. Check your authentication and repository access."
-  fi
-  log_info "✅ Created GitHub issue #$issue_number"
+#   mkdir -p "${feature_dir}"
+#   log_info "📁 Directory ensured: ${feature_dir}"
 
-  # Build feature identifiers using issue number
-  feature_slug=$(title_to_slug "$feature_title")
-  feature_name=$(printf "%05d" "$issue_number")-${feature_slug}
-  feature_dir="$REPO_ROOT/${CWAI_SPECS_FOLDER}/${feature_name}"
-  log_info "🚀 Creating feature: ${feature_name}"
+#   # Copy templates if specified
+#   local copied_files_csv
+#   copied_files_csv=$(copy_templates "${feature_dir}")
 
-  # Create and switch to feature branch
-  git checkout -b "${feature_name}" >/dev/null 2>&1 || log_error "Failed to create branch ${feature_name}"
-  log_info "Created new branch: ${feature_name}"
+#   # Output results
+#   output_feature_results "${feature_name}" "${feature_dir}" \
+#     "${feature_name}" "$issue_number" \
+#     "$feature_title" "$req" "${output_json}" "$copied_files_csv"
+# }
 
-  mkdir -p "${feature_dir}"
-  log_info "📁 Directory ensured: ${feature_dir}"
+# update_existing_feature() {
+#   local feature_branch="$1"
+#   local issue issue_number feature_dir feature_title
 
-  # Copy templates if specified
-  local copied_files_csv
-  copied_files_csv=$(copy_templates "${feature_dir}")
+#   assert_clean_repo
+#   if ! git_branch_exists "${feature_branch}"; then
+#     log_error "Branch '${feature_branch}' does not exist"
+#   fi
 
-  # Output results
-  output_feature_results "${feature_name}" "${feature_dir}" \
-    "${feature_name}" "$issue_number" \
-    "$feature_title" "$req" "${output_json}" "$copied_files_csv"
-}
+#   feature_dir="${SPECS_DIR}/${feature_branch}"
+#   if [[ ! -d "${feature_dir}" ]]; then
+#     log_error "Feature directory '${feature_dir}' not found"
+#   fi
 
-update_existing_feature() {
-  local feature_branch="$1"
-  local issue issue_number feature_dir feature_title
+#   git checkout "${feature_branch}" >/dev/null 2>&1 || log_error "Failed to switch to branch ${feature_branch}"
 
-  assert_clean_repo
-  if ! git_branch_exists "${feature_branch}"; then
-    log_error "Branch '${feature_branch}' does not exist"
-  fi
+#   # Extract issue number from branch name
+#   issue_number=$(extract_feature_id "${feature_branch}")
+#   issue_number=$(echo "$issue_number" | sed 's/^0*//')
 
-  feature_dir="${SPECS_DIR}/${feature_branch}"
-  if [[ ! -d "${feature_dir}" ]]; then
-    log_error "Feature directory '${feature_dir}' not found"
-  fi
+#   if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
+#     log_error "Could not determine GitHub issue number from branch '${feature_branch}'"
+#   fi
 
-  git checkout "${feature_branch}" >/dev/null 2>&1 || log_error "Failed to switch to branch ${feature_branch}"
+#   # read the entire issue
+#   issue=$($SCRIPT_DIR/$ISSUE_MANAGER/read-issue.sh $issue_number)
 
-  # Extract issue number from branch name
-  issue_number=$(extract_feature_id "${feature_branch}")
-  issue_number=$(echo "$issue_number" | sed 's/^0*//')
+#   # Get title from GitHub issue
+#   feature_title=$(echo "$issue" | jq -r '.title // "Unknown Feature"')
 
-  if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
-    log_error "Could not determine GitHub issue number from branch '${feature_branch}'"
-  fi
+#   # Copy templates if specified
+#   local copied_files_csv
+#   copied_files_csv=$(copy_templates "${feature_dir}")
 
-  # read the entire issue
-  issue=$($SCRIPT_DIR/$ISSUE_MANAGER/read-issue.sh $issue_number)
+#   # Output results
+#   output_feature_results "${feature_branch}" "${feature_dir}" \
+#     "${feature_branch}" "$issue_number" \
+#     "$feature_title" "$requirement" "${output_json}" "$copied_files_csv"
+# }
 
-  # Get title from GitHub issue
-  feature_title=$(echo "$issue" | jq -r '.title // "Unknown Feature"')
+# main() {
+#   local detected
+#   detected=$(requirement_to_feature_branch "${requirement}")
+#   if [[ -n "${detected}" ]]; then
+#     log_info "Detected existing feature reference: ${detected}"
+#     update_existing_feature "${detected}"
+#   else
+#     log_info "No existing feature reference found; creating new feature"
+#     create_new_feature "${requirement}"
+#   fi
+# }
 
-  # Copy templates if specified
-  local copied_files_csv
-  copied_files_csv=$(copy_templates "${feature_dir}")
-
-  # Output results
-  output_feature_results "${feature_branch}" "${feature_dir}" \
-    "${feature_branch}" "$issue_number" \
-    "$feature_title" "$requirement" "${output_json}" "$copied_files_csv"
-}
-
-main() {
-  local detected
-  detected=$(requirement_to_feature_branch "${requirement}")
-  if [[ -n "${detected}" ]]; then
-    log_info "Detected existing feature reference: ${detected}"
-    update_existing_feature "${detected}"
-  else
-    log_info "No existing feature reference found; creating new feature"
-    create_new_feature "${requirement}"
-  fi
-}
-
-# Run main function
-main
+# # Run main function
+# main
