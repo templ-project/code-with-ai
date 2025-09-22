@@ -13,6 +13,8 @@ if ! command -v log_info >/dev/null 2>&1; then
   exit 1
 fi
 
+export CWAI_SPECS_FOLDER=${CWAI_SPECS_FOLDER:-specs}
+
 # Load environment variables
 load_environment() {
   local repo_root="$1"

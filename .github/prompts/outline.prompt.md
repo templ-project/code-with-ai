@@ -17,10 +17,9 @@ Given the implementation details provided as an argument, do this:
 3. Run `.cwai/scripts/create-feature.sh --json [--template game ...] [--label design,story] "$ARGUMENTS"` and parse JSON for BRANCH_NAME, FEATURE_FOLDER, ISSUE_NUMBER, COPIED_TEMPLATES - all path variables are absolute.
 
 4. For each template in COPIED_TEMPLATES, perform the following:
-
-- load the corresponding outline from `.cwai/templates/outline/[template].md`
-- load the existing design file at `${FEATURE_FOLDER}/[template].md` if it exists (to understand what was agreed already)
-- write the new design to `${FEATURE_FOLDER}/[template].md` with a fresh document using the structure from the outline (GitHub Markdown). Do not append.
+  - load the corresponding outline from `.cwai/templates/outline/[template].md`
+  - load the existing design file at `${FEATURE_FOLDER}/[template].md` if it exists (to understand what was agreed already)
+  - write the new design to `${FEATURE_FOLDER}/[template].md` with a fresh document using the structure from the outline (GitHub Markdown). Do not append.
 <!-- 2. Load the original design template `.cwai/templates/game-design.md` to understand the game design structure.
 
 3. If the requirement is to refactor, load also the existing design file at `${FEATURE_FOLDER}/game-design.md` to fully understand what was agreed already.
