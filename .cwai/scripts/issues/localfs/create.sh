@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Script configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../../../.." && pwd)"
 
 source "${SCRIPT_DIR}/../../common/log.sh"
 
@@ -81,7 +81,7 @@ while [[ $# -gt 0 ]]; do
     exit 0
     ;;
   -*)
-    error_exit "Unknown option: $1. Use --help for usage information."
+    log_error "Unknown option: $1. Use --help for usage information."
     ;;
   *)
     # All remaining arguments are part of the task body
@@ -117,13 +117,40 @@ if [[ -z "${title}" ]]; then
 fi
 
 # Create GitHub issue
-existing_count=$(ls $CWAI_SPECS_FOLDER | wc -l 2>/dev/null || echo 0)
+# Ensure specs directory exists
+mkdir -p "$CWAI_SPECS_FOLDER"
+
+# Count existing files and generate next issue number
+existing_count=$(ls "$CWAI_SPECS_FOLDER" 2>/dev/null | wc -l | tr -d ' ')
 issue_number=$((existing_count + 1))
-echo "COUNT: $issue_number"
+
+feature_slug=$(title_to_slug "$title")
+feature_name=$(printf "%05d" "$issue_number")-${feature_slug}
+feature_dir="$REPO_ROOT/$CWAI_SPECS_FOLDER/${feature_name}"
+
+mkdir -p "$feature_dir"
+
+now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+echo '{}' | jq \
+  --arg title "$title" \
+  --arg description "$task_body" \
+  --arg assignee "John Doe" \
+  --arg created_at "$now" \
+  --arg updated_at "$now" \
+  --argjson id "${issue_number:-0}" \
+  '{
+    id: $id,
+    title: $title,
+    description: $description,
+    assignee: $assignee,
+    created_at: $created_at,
+    updated_at: $updated_at,
+    comments: []
+  }' >"$feature_dir/issue.json"
 
 # Validate issue creation succeeded
 if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
-  error_exit "Failed to create issue number."
+  log_error "Failed to create issue number."
 fi
 log_info "✅ Created Local issue (#$issue_number) $title"
 
@@ -139,15 +166,18 @@ log_info "✅ Created Local issue (#$issue_number) $title"
 # fi
 
 # Parse labels into array for JSON output
-IFS=',' read -ra label_array <<<"${labels}"
+declare -a label_array
+if [[ -n "$labels" ]]; then
+  IFS=',' read -ra label_array <<<"${labels}"
+fi
 
 # Output results
 output="{
   \"ISSUE_NUMBER\": $issue_number,
   \"ISSUE_TITLE\": \"$title\",
-  \"ISSUE_LABELS\": [$(printf '\"%s\",' "${label_array[@]}" | sed 's/,$//')],
+  \"ISSUE_LABELS\": [$(if [[ -n "$labels" ]]; then printf '\"%s\",' "${label_array[@]}" | sed 's/,$//'; fi)],
   \"ISSUE_PARENT\": \"${parent_issue:-null}\",
   \"ISSUE_PROJECT\": \"${GH_PROJECT:-null}\",
-  \"ISSUE_URL\": \"https://github.com/$(git remote get-url origin | sed 's/.*github.com[:/]\([^.]*\)\.git.*/\1/')/issues/$issue_number\"
+  \"ISSUE_URL\": \"$feature_dir\"
 }"
 output_results "$output" "$output_json"
