@@ -8,7 +8,6 @@ set -euo pipefail
 # Script configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-readonly SPECS_DIR="${REPO_ROOT}/.specs"
 readonly TEMPLATES_DIR="${REPO_ROOT}/.cwai/templates"
 
 source "${SCRIPT_DIR}/common/log.sh"
@@ -127,8 +126,8 @@ copy_templates() {
       template_file=$TEMPLATES_DIR/${template}-design.md
       if [ -f "$template_file" ]; then
         cp "$template_file" "$feature_dir/" &&
-        copied_files="${copied_files}${template}-design.md," &&
-        log_info "📄 Copied template: ${template}-design.md"
+          copied_files="${copied_files}${template}-design.md," &&
+          log_info "📄 Copied template: ${template}-design.md"
       else
         log_warn "Template '${template}' not found in ${TEMPLATES_DIR}"
       fi
@@ -136,7 +135,6 @@ copy_templates() {
   else
     log_info "ℹ️  No templates specified. Only creating directory structure."
   fi
-  
   echo "$copied_files"
 }
 
@@ -152,7 +150,7 @@ create_new_feature() {
   fi
 
   # Create GitHub issue first to get the ID
-  issue_number=$($SCRIPT_DIR/$ISSUE_MANAGER/create-issue.sh --title "$feature_title" --labels "$labels" --json "$req" | jq -r '.ISSUE_NUMBER // ""')
+  issue_number=$($SCRIPT_DIR/issues/$CWAI_ISSUE_MANAGER/create.sh --title "$feature_title" --labels "$labels" --json "$req" | jq -r '.ISSUE_NUMBER // ""')
 
   # Validate issue creation succeeded
   if [[ -z "$issue_number" || "$issue_number" == "0" ]]; then
@@ -163,7 +161,7 @@ create_new_feature() {
   # Build feature identifiers using issue number
   feature_slug=$(title_to_slug "$feature_title")
   feature_name=$(printf "%05d" "$issue_number")-${feature_slug}
-  feature_dir="${SPECS_DIR}/${feature_name}"
+  feature_dir="$REPO_ROOT/${CWAI_SPECS_FOLDER}/${feature_name}"
   log_info "🚀 Creating feature: ${feature_name}"
 
   # Create and switch to feature branch

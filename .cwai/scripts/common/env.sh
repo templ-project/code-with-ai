@@ -13,6 +13,9 @@ if ! command -v log_info >/dev/null 2>&1; then
   exit 1
 fi
 
+export CWAI_SPECS_FOLDER=${CWAI_SPECS_FOLDER:-specs}
+export CWAI_ISSUE_MANAGER=${CWAI_ISSUE_MANAGER:-localfs}
+
 # Load environment variables
 load_environment() {
   local repo_root="$1"
@@ -22,7 +25,10 @@ load_environment() {
   readonly _ENV_LOADED=1
 
   # Fail loudly if no repo root provided
-  [[ -z "$repo_root" ]] && { echo "ERROR: Repository root path is required" >&2; exit 1; }
+  [[ -z "$repo_root" ]] && {
+    echo "ERROR: Repository root path is required" >&2
+    exit 1
+  }
 
   # Load .env first, then .env.local (local overrides global)
   for env_file in "${repo_root}/.env" "${repo_root}/.env.local"; do

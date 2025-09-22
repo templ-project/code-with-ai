@@ -7,6 +7,6 @@
   - "npx eslint --fix --stats --no-warn-ignored"
 # Shell script files
 # TODO: once all scripts are fixed, uncomment this
-# ".cwai/**/*.sh":
-#   - "shfmt -i 2 -ci -bn -sr -w -d"
-#   - "shellcheck -x --severity=style --format=tty"
+".cwai/**/*.sh":
+  - "shfmt -i 2 -ci -bn -sr -w -d"
+  - "shellcheck -x --severity=style --format=tty"
