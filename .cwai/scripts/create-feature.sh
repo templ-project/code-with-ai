@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Create New Feature Script
-# Follows Google Bash Style Guide: https://google.github.io/styleguide/shellguide.html
 
 set -euo pipefail
 
@@ -132,9 +131,10 @@ fi
 
 # Main execution
 create_new_feature() {
-  local feature_labels="$1"
-  local feature_title="${2:-}"
-  local feature_body="$3"
+  local feature_templates="${1:-}"
+  local feature_labels="${2:-}"
+  local feature_title="${3:-}"
+  local feature_body="${4:-Unknown task requirement}"
   local feature_id feature_padded_id feature_name feature_title feature_slug feature_parent_dir feature_dir
 
   # Determine title
@@ -168,8 +168,10 @@ create_new_feature() {
 }
 
 update_existing_feature() {
-  local feature_name="$1"
-  local req="$2"
+  local feature_templates="${1:-}"
+  local feature_labels="${2:-}"
+  local feature_name="$3"
+  local feature_comment="${4:-}"
   local feature_id feature_padded_id feature_name feature_title feature_slug feature_parent_dir feature_dir
 
   feature_id=$(extract_feature_id "$feature_name")
@@ -188,7 +190,7 @@ update_existing_feature() {
     log_error "Could not determine issue from branch '${feature_name}'"
   fi
 
-  "${CWAI_ISSUE_MANAGER}_update_issue" "$feature_id" "$feature_name" "$feature_dir" "$req"
+  "${CWAI_ISSUE_MANAGER}_update_issue" "$feature_id" "$feature_name" "$feature_dir" "$feature_labels" "$feature_comment"
 
   #   # Copy templates if specified
   #   local copied_files_csv
@@ -201,15 +203,15 @@ update_existing_feature() {
 }
 
 main() {
-  local feature_name
-  feature_name=$(detect_feature_name "${requirement}")
+  local feature_name="$(detect_feature_name "${requirement}")"
+  local templates_csv="$([ "${#templates[@]}" -gt 0 ] && join_by_comma "${templates[@]}" || echo "")"
 
   if [[ -n "${feature_name}" ]]; then
     log_info "Detected existing feature reference: ${feature_name}"
-    update_existing_feature "${feature_name}" "${requirement}"
+    update_existing_feature "$templates_csv" "$labels" "${feature_name}" "${requirement}"
   else
     log_info "No existing feature reference found; creating new feature"
-    create_new_feature "$labels" "$title" "${requirement}"
+    create_new_feature "$templates_csv" "$labels" "$title" "${requirement}"
   fi
 }
 
