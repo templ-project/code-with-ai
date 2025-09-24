@@ -4,6 +4,12 @@
 
 set -euo pipefail
 
+# Require bash v4+
+if [[ -z "${BASH_VERSINFO:-}" || ${BASH_VERSINFO[0]} -lt 4 ]]; then
+  echo "ERROR: Bash 4 or later is required to run this script." >&2
+  exit 1
+fi
+
 # Script configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
@@ -84,50 +90,100 @@ if [[ -z "${requirement}" ]]; then
   log_error "Requirement is required. Provide the requirement as arguments."
 fi
 
-# #########################################
-# ## Output helpers
-# #########################################
-# output_feature_results() {
-#   local feature_name="$1" feature_dir="$2" current_branch="$3" feature_id="$4" title="$5" requirement="$6" output_json_flag="$7" copied_files="$8"
+#########################################
+## Output helpers
+#########################################
+output_feature_results() {
+  local feature_name="$1"
+  local feature_dir="$2"
+  local current_branch="$3"
+  local feature_id="$4"
+  local title="$5"
+  local requirement_text="$6"
+  local output_json_flag="$7"
+  local copied_files_csv="$8"
 
-#   copied_files=${copied_files%,} # Remove trailing comma if any
+  local json_output
+  json_output=$(jq -n \
+    --arg branch "$current_branch" \
+    --arg dir "$feature_dir" \
+    --arg id "$feature_id" \
+    --arg feature_title "$title" \
+    --arg requirement "$requirement_text" \
+    --arg copied "$copied_files_csv" \
+    '{
+      BRANCH_NAME: $branch,
+      FEATURE_FOLDER: $dir,
+      feature_id: $id,
+      TITLE: $feature_title,
+      REQUIREMENT: $requirement,
+      COPIED_TEMPLATES: (if $copied == "" then [] else ($copied | split(",") | map(select(length > 0))) end)
+    }')
 
-#   local output="{
-#  \"BRANCH_NAME\": \"${current_branch}\",
-#  \"FEATURE_FOLDER\": \"${feature_dir}\",
-#  \"feature_id\": \"${feature_id}\",
-#  \"TITLE\": \"${title}\",
-#  \"REQUIREMENT\": \"${requirement}\",
-#  \"COPIED_TEMPLATES\": [\"$(echo ${copied_files//,/\",\"})\"]
-# }"
+  output_results "$json_output" "$output_json_flag"
+}
 
-#   output_results "$output" "$output_json_flag"
-# }
+#########################################
+## Template helpers
+#########################################
+# TODO: simplify the function based on the todo comments inside; all templates will be found under `.cwai/templates`
+copy_templates() {
+  local feature_dir="$1"
+  local templates_csv="$2"
 
-# #########################################
-# ## Template helpers
-# #########################################
-# copy_templates() {
-#   local feature_dir="$1"
-#   local copied_files=""
+  local copied_files=()
 
-#   if [[ ${#templates[@]} -gt 0 ]]; then
-#     local template_file
-#     while IFS= read -r template; do
-#       template_file=$TEMPLATES_DIR/${template}-design.md
-#       if [ -f "$template_file" ]; then
-#         cp "$template_file" "$feature_dir/" &&
-#           copied_files="${copied_files}${template}-design.md," &&
-#           log_info "📄 Copied template: ${template}-design.md"
-#       else
-#         log_warn "Template '${template}' not found in ${TEMPLATES_DIR}"
-#       fi
-#     done < <(printf '%s\n' "${templates[@]}")
-#   else
-#     log_info "ℹ️  No templates specified. Only creating directory structure."
-#   fi
-#   echo "$copied_files"
-# }
+  if [[ -z "$templates_csv" ]]; then
+    log_info "ℹ️  No templates specified. Only creating directory structure."
+    echo ""
+    return
+  fi
+
+  local template
+  local IFS=','
+  read -r -a template_list <<<"$templates_csv"
+
+  for template in "${template_list[@]}"; do
+    local trimmed_template="$template"
+    trimmed_template="${trimmed_template#${trimmed_template%%[![:space:]]*}}"
+    trimmed_template="${trimmed_template%${trimmed_template##*[![:space:]]}}"
+    template="$trimmed_template"
+    [[ -z "$template" ]] && continue
+
+    local source_path="${TEMPLATES_DIR}/${template}"
+    if [[ ! -f "$source_path" ]]; then
+      [[ "$template" == *.md ]] || source_path="${TEMPLATES_DIR}/${template}.md"
+    fi
+
+    if [[ ! -f "$source_path" ]]; then
+      log_warn "Template '${template}' not found in ${TEMPLATES_DIR}"
+      continue
+    fi
+
+    mkdir -p "$feature_dir"
+    local destination="$feature_dir/$(basename "$source_path")"
+
+    if [[ -e "$destination" ]]; then
+      log_warn "Template '$(basename "$destination")' already exists in ${feature_dir}; skipping"
+      continue
+    fi
+
+    if cp "$source_path" "$destination"; then
+      copied_files+=("$(basename "$destination")")
+      log_info "📄 Copied template: $(basename "$source_path")"
+    else
+      log_warn "Failed to copy template '${template}'"
+    fi
+  done
+
+  if [[ ${#copied_files[@]} -eq 0 ]]; then
+    echo ""
+    return
+  fi
+
+  local IFS=','
+  echo "${copied_files[*]}"
+}
 
 # Main execution
 create_new_feature() {
@@ -157,14 +213,12 @@ create_new_feature() {
   git checkout -b "${feature_name}" >/dev/null 2>&1 || log_error "Failed to create branch ${feature_name}"
   log_info "Created new branch: ${feature_name}"
 
-  # # Copy templates if specified
-  # local copied_files_csv
-  # copied_files_csv=$(copy_templates "${feature_dir}")
-  #
-  # # Output results
-  # output_feature_results "${feature_name}" "${feature_dir}" \
-  #   "${feature_name}" "$feature_id" \
-  #   "$feature_title" "$req" "${output_json}" "$copied_files_csv"
+  local copied_files_csv=""
+  copied_files_csv=$(copy_templates "${feature_dir}" "$feature_templates")
+
+  output_feature_results "${feature_name}" "${feature_dir}" \
+    "${feature_name}" "$feature_id" \
+    "$feature_title" "$feature_body" "${output_json}" "$copied_files_csv"
 }
 
 update_existing_feature() {
@@ -184,7 +238,7 @@ update_existing_feature() {
     log_error "Feature directory '${feature_dir}' not found"
   fi
 
-  git checkout "${feature_name}" >/dev/null 2>&1 || log_error "Failed to switch to branch ${feature_branch}"
+  git checkout "${feature_name}" >/dev/null 2>&1 || log_error "Failed to switch to branch ${feature_name}"
 
   if [[ -z "$feature_id" || "$feature_id" == "0" ]]; then
     log_error "Could not determine issue from branch '${feature_name}'"
@@ -192,14 +246,17 @@ update_existing_feature() {
 
   "${CWAI_ISSUE_MANAGER}_update_issue" "$feature_id" "$feature_name" "$feature_dir" "$feature_labels" "$feature_comment"
 
-  #   # Copy templates if specified
-  #   local copied_files_csv
-  #   copied_files_csv=$(copy_templates "${feature_dir}")
+  local copied_files_csv=""
+  copied_files_csv=$(copy_templates "${feature_dir}" "$feature_templates")
 
-  #   # Output results
-  #   output_feature_results "${feature_branch}" "${feature_dir}" \
-  #     "${feature_branch}" "$feature_id" \
-  #     "$feature_title" "$requirement" "${output_json}" "$copied_files_csv"
+  if [[ -z "$feature_title" && -f "${feature_dir}/issue.json" ]]; then
+    feature_title=$(jq -r '.title // empty' <"${feature_dir}/issue.json")
+  fi
+  [[ -z "$feature_title" ]] && feature_title="$feature_name"
+
+  output_feature_results "${feature_name}" "${feature_dir}" \
+    "${feature_name}" "$feature_id" \
+    "$feature_title" "$feature_comment" "${output_json}" "$copied_files_csv"
 }
 
 main() {

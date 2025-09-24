@@ -174,17 +174,30 @@ extract_feature_id() {
   [ -n "$feature_id" ] && echo "$feature_id" || echo "0"
 }
 
-# # Output JSON or key=value format
-# output_results() {
-#   local json_result="$1" output_json_flag="$2"
-#
-#   if [ "$output_json_flag" = "true" ]; then
-#     echo "$json_result"
-#   else
-#     echo "$json_result" |
-#       jq -r 'to_entries[] | "\(.key)=\"\(if (.value | type) == "array" then (.value | join(",")) else .value end)\""'
-#   fi
-# }
+# Output JSON or key=value format
+output_results() {
+  local json_result="$1"
+  local output_json_flag="$2"
+
+  if [[ "$output_json_flag" == "true" ]]; then
+    echo "$json_result"
+    return
+  fi
+
+  echo "$json_result" |
+    jq -r '
+      to_entries[]
+      | "\(.key)=\"\(
+          if (.value | type) == "array" then
+            (.value | join(","))
+          elif (.value | type) == "object" then
+            (.value | tojson)
+          else
+            .value
+          end
+        )\""
+    '
+}
 
 # Generate random hex color (returns 6-char hex without #)
 generate_hex_color() {
