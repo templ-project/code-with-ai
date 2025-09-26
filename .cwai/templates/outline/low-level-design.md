@@ -1,15 +1,23 @@
 ## Execution Flow (main)
 
-1. Parse HLD and requirements → ERROR if missing.
-2. Break system into modules/components.
-3. For each module: specify classes, methods, data, interfaces.
-4. Add diagrams (class, sequence, state, activity) → WARN if omitted.
-5. Define data structures & flows.
-6. Specify external/internal interfaces (contracts, formats).
-7. Capture algorithms, complexity, error handling, logging.
-8. Security, performance, testing details.
-9. Validate against assumptions, dependencies, constraints.
-10. Run Review Checklist → FAIL if mandatory sections missing or contain only `[NEEDS CLARIFICATION]`.
+```
+1. If no HLD mentioned, load features spec from Input path; else
+   → Parse HLD and requirements; if HLD contains [NEEDS CLARIFICATION] tags fail and instruct to use /clarify prompt.
+2. If `${FEATURE_FOLDER}/low-level-design.md` exists already,
+   → if file contains [NEEDS CLARIFICATION] tags, fail and instruct to use `/clarify` prompt; else
+   → continue formulating based on existing content.
+3. Fill Technical Context (scan for NEEDS CLARIFICATION)
+   → Research best implementation for the required feature (produce summary under `${FEATURE_FOLDER}/research.md`)
+4. Break system into modules/components.
+5. For each module: specify classes, methods, data, interfaces.
+6. Add diagrams (class, sequence, state, activity) → WARN if omitted.
+7. Define data structures & flows.
+8. Specify external/internal interfaces (contracts, formats).
+9. Capture algorithms, complexity, error handling, logging.
+10. Security, performance, testing details.
+11. Validate against assumptions, dependencies, constraints.
+12. Run Review Checklist → FAIL if mandatory sections missing or contain only `[NEEDS CLARIFICATION]`.
+```
 
 ---
 
@@ -17,7 +25,7 @@
 
 - ✅ Focus on **HOW the system is built internally** (classes, methods, data, flows).
 - ❌ Do not drift into requirements/business value (belongs to HLD).
-- 📐 Use diagrams where possible.
+- 📐 Use diagrams where possible. Use Mermaid.js
 - 🧩 Every interface & module must have unambiguous contracts.
 - 🏷 Mark uncertainties with `[NEEDS CLARIFICATION: …]`.
 
@@ -32,23 +40,35 @@
 **Version**: [vX.Y] • **Date**: [YYYY-MM-DD] • **Status**: Draft  
 **Input**: Reference HLD: [link or "[NEEDS CLARIFICATION]"]
 
-## 1. Introduction [MANDATORY]
+## Introduction [MANDATORY]
 
-### 1.1 Purpose
+### Purpose
 
 Explain why this LLD exists (ref HLD).
 
-### 1.2 Scope
+### Scope
 
 What part of the system this LLD covers.
 
-### 1.3 Audience
+### Audience
 
 Who should read this (devs, testers, ops).
 
-### 1.4 References
+### References
 
-Link to HLD, requirements, standards.
+Link to HLD, requirements, standards, documentation.
+
+### Technical Context
+
+- **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+- **Coding Style Guides**: [e.g. Google Style Guides, PEP8 or NEEDS CLARIFICATION (unless there's smth more language oriented like PEP8, use Google's)] (add link)
+- **Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+- \***\*Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+- \***\*Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+- **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION] Project Type: [single/web/mobile - determines source structure]
+- **Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
+- **Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
+- **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## 2. System Overview [MANDATORY]
 
@@ -71,7 +91,7 @@ Where this component/module fits (with diagram if useful).
 
 ### 3.2 Class Diagrams
 
-[Include UML diagrams + explanation - Use Mermaid.js]
+[Include UML diagrams + explanation]
 
 ### 3.3 Sequence Diagrams
 

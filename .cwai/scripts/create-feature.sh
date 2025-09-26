@@ -13,7 +13,7 @@ fi
 # Script configuration
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-readonly TEMPLATES_DIR="${REPO_ROOT}/.cwai/templates"
+readonly TEMPLATES_DIR="${REPO_ROOT}/.cwai/templates/outline"
 
 # shellcheck source=.cwai/scripts/common.sh
 source "${SCRIPT_DIR}/common.sh"

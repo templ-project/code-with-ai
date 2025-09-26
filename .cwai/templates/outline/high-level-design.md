@@ -1,23 +1,28 @@
 ## Execution Flow (main)
 
+```
 1. Parse inputs (business brief, drivers, requirements, current state)
    → If missing: ERROR "Insufficient inputs for HLD"
-2. Summarize Context & Drivers
+2. If `${FEATURE_FOLDER}/high-level-design.md` exists already,
+   → if file contains [NEEDS CLARIFICATION] tags, fail and instruct to use `/clarify` prompt; else
+   → continue formulating based on existing content.
+3. Summarize Context & Drivers
    → Validate objectives are SMART; else WARN and mark [NEEDS CLARIFICATION]
-3. Capture Assumptions, Constraints, Dependencies
-4. Document Current State (logical, physical, interfaces)
+4. Capture Assumptions, Constraints, Dependencies
+5. Document Current State (logical, physical, interfaces)
    → If unknown: WARN and mark discovery tasks
-5. Propose Target Architecture (logical first, then physical)
+6. Propose Target Architecture (logical first, then physical)
    → Include interface impacts; avoid vendor lock-in specifics unless required
-6. Define NFRs & Service Continuity (RTO/RPO, failure modes, SPOF, symmetry)
-7. Asses Security & Compliance (threats, controls, data flows)
-8. Estimate Cost Model (CapEx / OpEx) & Support Model
-9. Define Risks & Mitigations; Decommissioning; Roadmap
-10. Run Review Checklist
+7. Define NFRs & Service Continuity (RTO/RPO, failure modes, SPOF, symmetry)
+8. Asses Security & Compliance (threats, controls, data flows)
+9. Estimate Cost Model (CapEx / OpEx) & Support Model
+10. Define Risks & Mitigations; Decommissioning; Roadmap
+11. Run Review Checklist
     → If any [NEEDS CLARIFICATION]: WARN "HLD has uncertainties"
     → If low-level build details present: ERROR "Remove implementation detail"
-11. Cleanup document of unnecessary sections.
-12. Return: SUCCESS (HLD ready for governance / planning)
+12. Cleanup document of unnecessary sections.
+13. Return: SUCCESS (HLD ready for governance / planning)
+```
 
 ---
 
@@ -26,12 +31,13 @@
 - ✅ HLD = **WHAT the solution looks like** and **WHY these choices**, not step-by-step build.
 - ❌ No low-level config, code, or vendor SKUs (leave for LLD/implementation).
 - 🧩 Separate **logical** (concepts & flows) from **physical** (tech components).
+- 📐 Use diagrams where possible. Use Mermaid.js
 - 🧪 Every decision should map to drivers, requirements, or constraints.
 - 🏷 Use `[NEEDS CLARIFICATION: …]` instead of guessing.
 
 ---
 
-# High-Level Design (HLD): [SYSTEM / FEATURE NAME]
+# High-Level Design (HLD): [SYSTEM / FEATURE NAME] [MANDATORY]
 
 **Design ID**: [HLD-###]  
 **Service / Domain**: [Service Name]  
@@ -40,13 +46,13 @@
 **Version**: [vX.Y] • **Date**: [YYYY-MM-DD] • **Status**: Draft  
 **Input**: Business brief / proposal link: [URL or "[NEEDS CLARIFICATION: missing]"]
 
-## Document History
+## Document History [MANDATORY]
 
 | Version | Date       | Summary of Change | Reference ID |
 | ------: | ---------- | ----------------- | ------------ |
 |     1.0 | 2014-07-15 | Initial draft     | -            |
 
-## Design Ownership (RACI-lite)
+## Design Ownership (RACI-lite) [MANDATORY]
 
 | Role                                   | Responsibility                        | Named Individual |
 | -------------------------------------- | ------------------------------------- | ---------------- |
@@ -59,9 +65,9 @@
 | Applications & Data                    | App/data architecture                 |                  |
 | Technology                             | Platform standards alignment          |                  |
 
-## 1 Context
+## 1 Context [MANDATORY]
 
-### 1.1 Summary (for non-technical stakeholders)
+### 1.1 Summary (for non-technical stakeholders) [MANDATORY]
 
 - Service/system name: [ ]
 - Change type: [New / Change / Upgrade]
@@ -71,36 +77,36 @@
 - Very high-level “how”: [ ]
 - Criticality / categorisation: [Low/Med/High or [NEEDS CLARIFICATION]]
 
-### 1.2 Links to Documentation
+### 1.2 Links to Documentation [MANDATORY]
 
 - Business case / PID: [ ]
 - Prior designs / related docs: [ ]
 - Requirements doc: [ ]
 
-## 2 Drivers, Requirements, Objectives
+## 2 Drivers, Requirements, Objectives [MANDATORY]
 
-### 2.1 Drivers
+### 2.1 Drivers [MANDATORY]
 
 - [ ]
 
-### 2.2 Requirements (Functional & Non-Functional)
+### 2.2 Requirements (Functional & Non-Functional) [MANDATORY]
 
 - Reference / link: [ ]
 - Gaps: [NEEDS CLARIFICATION: …]
 
-### 2.3 Objectives (SMART)
+### 2.3 Objectives (SMART) [MANDATORY]
 
 | ID     | Objective | Success Criteria |
 | ------ | --------- | ---------------- |
 | OBJ-01 |           |                  |
 
-### 2.4 Impact of No Action
+### 2.4 Impact of No Action [MANDATORY]
 
 - [Business/operational risk if unchanged]
 
-## 3 Assumptions, Constraints, Dependencies
+## 3 Assumptions, Constraints, Dependencies [MANDATORY]
 
-### 3.1 Assumptions
+### 3.1 Assumptions [MANDATORY]
 
 | Assumption                | Impact on Design |
 | ------------------------- | ---------------- |
@@ -109,7 +115,7 @@
 | Split DC model (~30km)    |                  |
 | Additional                |                  |
 
-### 3.2 Constraints
+### 3.2 Constraints [MANDATORY]
 
 - Funding: [ ]
 - Skills / resources: [ ]
@@ -118,84 +124,84 @@
 - Customer process rigidity: [ ]
 - Pre-purchased items: [ ]
 
-### 3.3 Dependencies
+### 3.3 Dependencies [MANDATORY]
 
 - Other departments: [ ]
 - Suppliers: [ ]
 - Internal groups / other projects: [ ]
 - Those dependent on this design: [ ]
 
-## 4 Current State
+## 4 Current State [MANDATORY]
 
-### 4.1 Logical / Architectural Summary
+### 4.1 Logical / Architectural Summary [MANDATORY]
 
 - Key components, actors, data, flows.
 
-### 4.2 Logical Diagrams
+### 4.2 Logical Diagrams [OPTIONAL]
 
 - DFD / ERD / Use cases.
 - Internal interfaces: [ ]
 
-### 4.3 Physical Technology Summary
+### 4.3 Physical Technology Summary [MANDATORY]
 
 - Hardware / software / platforms in scope.
 
-### 4.4 Physical Diagrams
+### 4.4 Physical Diagrams [OPTIONAL]
 
 - Network / compute / storage / app topology.
 
-### 4.5 External Interfaces
+### 4.5 External Interfaces [MANDATORY]
 
 - Systems: [AD, DNS, Email, Monitoring, myFinance, myView, ETLs, Storage]
 - Known change impacts: [ ]
 
-### 4.6 Current Limitations
+### 4.6 Current Limitations [MANDATORY]
 
 | ID     | Limitation | Impact |
 | ------ | ---------- | ------ |
 | LIM-01 |            |        |
 
-## 5 Target Architecture
+## 5 Target Architecture [MANDATORY]
 
-### 5.1 Options Considered (Brief)
+### 5.1 Options Considered (Brief) [MANDATORY]
 
 - Alternatives & rationale for selection.
 
-### 5.2 Logical Target Design
+### 5.2 Logical Target Design [MANDATORY]
 
 - Changes from current: [ ]
 - Known logical limitations (1-year / 5-year): [ ]
 - Residual risks/limitations: [ ]
 
-### 5.3 Physical Solution Summary
+### 5.3 Physical Solution Summary [MANDATORY]
 
 - Platforms, hosting model, data stores, major products (generic—no SKUs).
 - Reference designs cited: [Suppliers/SMEs]
 
-### 5.4 Physical Diagrams
+### 5.4 Physical Diagrams [OPTIONAL]
 
 - Network / server / storage / app / data.
 
-### 5.5 Interfaces (Target)
+### 5.5 Interfaces (Target) [MANDATORY]
 
 | Interface | Change Summary | Effort | Owner |
 | --------- | -------------- | ------ | ----- |
 |           |                |        |       |
 
-## 6 Service Continuity & NFRs
+## 6 Service Continuity & NFRs [MANDATORY]
 
-### 6.1 Criticality & SLOs
+### 6.1 Criticality & SLOs [MANDATORY]
 
 - Criticality: [ ]
 - Availability target: [ ]
 - RTO: [ ] • RPO: [ ]
 - Performance / scale targets: [NEEDS CLARIFICATION if missing]
 
-### 6.2 Backup & Recovery
+### 6.2 Backup & Recovery [MANDATORY]
 
 - Scope, frequency, retention, recovery procedures, BCP link.
 
-### 6.3 Failure Modes & Response
+### 6.3 Failure Modes & Response [MANDATORY]
 
 | Failure Mode                    | Required Function | High-Level Process |
 | ------------------------------- | ----------------- | ------------------ |
@@ -204,73 +210,73 @@
 | Data loss (partial/complete)    |                   |                    |
 | During component updates        |                   |                    |
 
-### 6.4 Single Points of Failure
+### 6.4 Single Points of Failure [MANDATORY]
 
 - [ ]
 
-### 6.5 Symmetry (Primary vs Secondary)
+### 6.5 Symmetry (Primary vs Secondary) [OPTIONAL]
 
 - [ ]
 
-## 7 Security & Compliance
+## 7 Security & Compliance [MANDATORY]
 
 - Data classification, flows, and boundaries
 - Threats & controls (authn/z, logging, monitoring)
 - Regulatory/standards: [ ]
 - Open issues: [NEEDS CLARIFICATION]
 
-## 8 Update Methodology
+## 8 Update Methodology [MANDATORY]
 
 For major elements: frequency, type, responsibility, expected cost.
 
-## 9 Benefits (High Level)
+## 9 Benefits (High Level) [MANDATORY]
 
 - [Business, operational, risk reduction]
 
-## 10 Risks & Mitigations (Residual)
+## 10 Risks & Mitigations (Residual) [MANDATORY]
 
 | Risk | Type | Summary | Mitigation |
 | ---- | ---- | ------- | ---------- |
 |      |      |         |            |
 
-## 11 Cost Model (High Level, excl. project costs)
+## 11 Cost Model (High Level, excl. project costs) [MANDATORY]
 
-### 11.1 CapEx
+### 11.1 CapEx [MANDATORY]
 
 - Servers, upfront licenses, network, facilities.
 
-### 11.2 CapEx-Generated OpEx
+### 11.2 CapEx-Generated OpEx [OPTIONAL]
 
 - Support, maintenance, per-seat/size uplifts, HW maintenance, annual health checks.
 
-### 11.3 OpEx
+### 11.3 OpEx [MANDATORY]
 
 - Hosting, backup, comms & networks.
 
-## 12 Support & Operations
+## 12 Support & Operations [MANDATORY]
 
-### 12.1 Service Governance
+### 12.1 Service Governance [MANDATORY]
 
 - Service Owner, Service Operations Manager, Business Owner.
 
-### 12.2 Operational Support
+### 12.2 Operational Support [MANDATORY]
 
 | Element | Capabilities Required | Anticipated Load | Current Capacity | Training/Resourcing Needed |
 | ------- | --------------------- | ---------------- | ---------------- | -------------------------- |
 |         |                       |                  |                  |                            |
 
-## 13 Decommissioning Targets
+## 13 Decommissioning Targets [MANDATORY]
 
 - Services / Infrastructure to retire; timing from delivery.
   | Element | Replaced By | Decommission Type | Timescale |
   |---------|-------------|-------------------|----------|
   | | | | |
 
-## 14 Block Scheduling & Lifecycle
+## 14 Block Scheduling & Lifecycle [OPTIONAL]
 
 - Major blocks, lifecycle stages, decision gates; where outputs go (CAB, etc.).
 
-## 15 Potential Future Improvements
+## 15 Potential Future Improvements [OPTIONAL]
 
 - Near-term and strategic enhancements.
 
@@ -278,14 +284,14 @@ For major elements: frequency, type, responsibility, expected cost.
 
 ## Review & Acceptance Checklist (Gate)
 
-### Content Quality
+### Content Quality]
 
 - [ ] No low-level implementation details
 - [ ] Logical and physical separated & justified
 - [ ] Stakeholder-readable; links provided
 - [ ] Objectives SMART and mapped to drivers
 
-### Completeness
+### Completeness]
 
 - [ ] Assumptions/constraints/dependencies explicit
 - [ ] Current state and target defined with diagrams
