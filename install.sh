@@ -46,8 +46,13 @@ log_success() {
 show_logo() {
   printf "%b" "$COLOR_BLUE"
   cat <<'EOF'
+<<<<<<< HEAD
    _____                _____
   / ____|           _  |_   _|
+=======
+   _____            _   _____
+  / ____|          | | |_   _|
+>>>>>>> a0b08b1 (chore: updated how features are created)
  | |     __      _ / \   | |
  | |     \ \ /\ / / / \  | |
  | |____  \ V  V / ____\_| |_

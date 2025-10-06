@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 # Code with AI (CwAI)
 
 ```text
@@ -14,7 +16,7 @@
 
 Design → Clarify → Plan → Implement (in small, honest, inspectable steps)
 
-> This project is intentionally a work-in-progress. I’m designing the framework *while* using it, and keeping the rough edges visible instead of hiding them.
+> This project is intentionally a work-in-progress. I’m designing the framework _while_ using it, and keeping the rough edges visible instead of hiding them.
 
 ---
 
@@ -42,12 +44,12 @@ If you maintain one of those projects and want clearer attribution, reach out or
 
 ### What This Is (and Isn’t)
 
-| Is | Isn’t |
-| --- | --- |
-| Opinionated workflow skeleton | A locked-down framework |
+| Is                            | Isn’t                                    |
+| ----------------------------- | ---------------------------------------- |
+| Opinionated workflow skeleton | A locked-down framework                  |
 | Design + planning scaffolding | A replacement for architectural judgment |
-| Prompts you can fork & remix | Magic “build my SaaS” button |
-| Learning-in-public experiment | Guaranteed best practice |
+| Prompts you can fork & remix  | Magic “build my SaaS” button             |
+| Learning-in-public experiment | Guaranteed best practice                 |
 
 ### Current Status
 
@@ -127,12 +129,12 @@ The `install.sh` script will:
 2. Ask Local vs Global (if supported)
 3. Determine the correct target path
 4. Detect any existing installation and let you choose:
-    - (1) Copy Over Existing
-    - (2) Remove and Reinstall
+   - (1) Copy Over Existing
+   - (2) Remove and Reinstall
 5. Copy `.cwai/` plus client‑specific prompt files:
-    - Copilot → `.github/prompts/*.prompt.md`
-    - Claude  → `~/.config/claude/prompts/*.md` (or chosen path)
-    - Gemini  → `~/.config/gemini/templates/*.md`
+   - Copilot → `.github/prompts/*.prompt.md`
+   - Claude → `~/.config/claude/prompts/*.md` (or chosen path)
+   - Gemini → `~/.config/gemini/templates/*.md`
 
 ### Requirements
 
@@ -148,9 +150,9 @@ If you prefer manual install: just copy the entire `.cwai` folder into any repo 
 
 Environment variables (can be placed in `.env` or `.env.local` in repo root):
 
-| Variable | Default | Purpose |
-| -------- | ------- | ------- |
-| `CWAI_SPECS_FOLDER` | `specs` | Root folder where feature spec folders are created |
+| Variable             | Default   | Purpose                                             |
+| -------------------- | --------- | --------------------------------------------------- |
+| `CWAI_SPECS_FOLDER`  | `specs`   | Root folder where feature spec folders are created  |
 | `CWAI_ISSUE_MANAGER` | `localfs` | `localfs` (filesystem only) or `github` (uses `gh`) |
 
 When using `github` issue manager the script mirrors issues locally under the specs folder (creates `issue.json`).
@@ -159,12 +161,12 @@ When using `github` issue manager the script mirrors issues locally under the sp
 
 ## Core Workflow Overview
 
-| Phase | Command | Output Artifacts | Objective |
-| ----- | ------- | ---------------- | --------- |
-| Ideation / Scaffolding | `/outline` | `specs/<id>-<slug>/high-level-design.md` (or other selected templates) + `issue.json` | Create initial structured design docs & branch |
-| Clarification | `/clarify` | Updated in‑place doc (version bumped) | Remove ambiguity; add precise questions & integrate answers |
-| Planning | `/breakdown` | `<document>.plan.md` (or `.plan.json`) | Delivery plan with Epics → Stories → Tasks |
-| Implementation | `/implement` | Code, updates, follow‑up tasks | Guided development aligned with plan |
+| Phase                  | Command      | Output Artifacts                                                                      | Objective                                                   |
+| ---------------------- | ------------ | ------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Ideation / Scaffolding | `/outline`   | `specs/<id>-<slug>/high-level-design.md` (or other selected templates) + `issue.json` | Create initial structured design docs & branch              |
+| Clarification          | `/clarify`   | Updated in‑place doc (version bumped)                                                 | Remove ambiguity; add precise questions & integrate answers |
+| Planning               | `/breakdown` | `<document>.plan.md` (or `.plan.json`)                                                | Delivery plan with Epics → Stories → Tasks                  |
+| Implementation         | `/implement` | Code, updates, follow‑up tasks                                                        | Guided development aligned with plan                        |
 
 > Each stage depends on the previous one being “clean” (no unresolved `[NEEDS CLARIFICATION]` tags where mandatory).
 
@@ -172,7 +174,7 @@ When using `github` issue manager the script mirrors issues locally under the sp
 
 ## `/outline` – From Requirement Sentence to Structured Specs
 
-Use when: You have an unstructured feature thought (“Add MFA to login”) and want a shaped, inspectable starting spec *before* you start breaking things.
+Use when: You have an unstructured feature thought (“Add MFA to login”) and want a shaped, inspectable starting spec _before_ you start breaking things.
 
 Prompt does (enforced by `outline.md`):
 
@@ -201,7 +203,7 @@ Follow‑on: skim the generated doc. Resist the urge to delete `[NEEDS CLARIFICA
 
 ## `/clarify` – Eliminate Ambiguity
 
-Use when: A design doc *exists* but you feel that uneasy “We’re still guessing in three places” sensation.
+Use when: A design doc _exists_ but you feel that uneasy “We’re still guessing in three places” sensation.
 
 Arguments (in free text following the command):
 
@@ -235,7 +237,7 @@ Exit conditions:
 
 ## `/breakdown` – Convert Design to Delivery Plan
 
-Use when: The design feels *boringly unambiguous* and you’re itching to build.
+Use when: The design feels _boringly unambiguous_ and you’re itching to build.
 
 Key flags:
 
@@ -314,7 +316,7 @@ Removing labels: prefix with `-` (e.g., `--labels -development`).
 
 Core promises to yourself:
 
-- Don’t invent—write the uncertainty *down*.
+- Don’t invent—write the uncertainty _down_.
 - HLD = architectural intent & justification. No vendor SKU shopping.
 - LLD = internal structure & contracts. Still not code dumps.
 - Planning IDs are sticky; avoid renumber churn (it kills traceability).
@@ -365,12 +367,12 @@ Pre-commit tooling (husky + lint-staged) can be configured to enforce formatting
 
 ## Troubleshooting
 
-| Symptom | Cause | Fix |
-| ------- | ----- | --- |
-| `ERROR: Bash 4 or later is required` | Using macOS default `/bin/bash` 3.x | Install modern bash (e.g. via Homebrew) & re-run with `env bash` |
-| No prompts appear in Copilot | Install not run in correct project | Re-run `./install.sh` locally with Copilot selected |
-| `/clarify` returns no questions | Document already complete or wrong path passed | Verify path and presence of mandatory placeholders |
-| Plan omits items | `--max-items` triggered truncation | Re-run with higher `--max-items` or another `/breakdown` pass |
+| Symptom                              | Cause                                          | Fix                                                              |
+| ------------------------------------ | ---------------------------------------------- | ---------------------------------------------------------------- |
+| `ERROR: Bash 4 or later is required` | Using macOS default `/bin/bash` 3.x            | Install modern bash (e.g. via Homebrew) & re-run with `env bash` |
+| No prompts appear in Copilot         | Install not run in correct project             | Re-run `./install.sh` locally with Copilot selected              |
+| `/clarify` returns no questions      | Document already complete or wrong path passed | Verify path and presence of mandatory placeholders               |
+| Plan omits items                     | `--max-items` triggered truncation             | Re-run with higher `--max-items` or another `/breakdown` pass    |
 
 ---
 
@@ -395,11 +397,11 @@ Feel free to adapt the templates or extend prompts for your domain (data enginee
 
 ## Philosophy in Practice
 
-The loop intentionally enforces *progressive elaboration*:
+The loop intentionally enforces _progressive elaboration_:
 
 Idea → (outline) → (clarify) → (plan) → (implement) → (discover) → (clarify again) …
 
-It’s fine—even healthy—to re-enter `/clarify` mid‑implementation when reality bites. The guardrails exist to make that a *cheap* move instead of a political one.
+It’s fine—even healthy—to re-enter `/clarify` mid‑implementation when reality bites. The guardrails exist to make that a _cheap_ move instead of a political one.
 
 ## FAQ (Tiny & Growing)
 
@@ -407,7 +409,7 @@ It’s fine—even healthy—to re-enter `/clarify` mid‑implementation when re
 Because it diff‑reviews well, survives refactors, and doubles as shared memory between humans and AI.
 
 **Q: Can I skip straight to `/breakdown`?**
-You *can*. You’ll probably regret it on anything non‑trivial.
+You _can_. You’ll probably regret it on anything non‑trivial.
 
 **Q: Where are the tests for the prompts?**
 Planned: prompt regression harness + golden output snapshots.
@@ -419,4 +421,24 @@ Not if you treat stages as revisit-able checkpoints, not gates.
 
 If any of this resonates—or annoys you productively—open an issue with a concrete example. That feedback loop is the whole point.
 
-Happy prompt‑driven building! 🚀
+# Happy prompt‑driven building! 🚀
+
+## Steps
+
+### `/outline`
+
+### `/clarify`
+
+### `/breakdown`
+
+### `/implement`
+
+Should split a Design Document into Stages ()
+
+### Usage
+
+- Start with `/outline` to define a design document
+- Use `/clarify` to better define the design document
+- Use `/breakdown` to split the design document into multiple tasks
+- Use `/implement` to code
+  > > > > > > > a0b08b1 (chore: updated how features are created)
