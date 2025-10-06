@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Code with AI (CwAI)
 
 ```text
@@ -88,6 +86,13 @@ Alpha. Expect:
   - [Contributing](#contributing)
   - [Philosophy in Practice](#philosophy-in-practice)
   - [FAQ (Tiny \& Growing)](#faq-tiny--growing)
+- [Happy prompt‑driven building! 🚀](#happy-promptdriven-building-)
+  - [Steps](#steps)
+    - [`/outline`](#outline)
+    - [`/clarify`](#clarify)
+    - [`/breakdown`](#breakdown)
+    - [`/implement`](#implement)
+    - [Usage](#usage)
 
 ---
 
@@ -441,4 +446,3 @@ Should split a Design Document into Stages ()
 - Use `/clarify` to better define the design document
 - Use `/breakdown` to split the design document into multiple tasks
 - Use `/implement` to code
-  > > > > > > > a0b08b1 (chore: updated how features are created)
