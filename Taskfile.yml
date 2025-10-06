@@ -1,6 +1,37 @@
 version: "3"
 
 tasks:
+  vscode:to:
+    cmds:
+      - |
+        mkdir -p {{ .GITHUB_WORKSPACE }}/.github/prompts
+        for file in .cwai/prompts/*.md; do
+          file_name=$(basename $file);
+          echo "Copying $file to .github/prompts/${file_name/.md/.prompt.md}";
+          cp $file {{ .GITHUB_WORKSPACE }}/.github/prompts/${file_name/.md/.prompt.md};
+        done
+    desc: "Sync .github/prompts from .cwai/prompts"
+    summary: |
+      Run example:
+        task vscode:to
+    vars:
+      GITHUB_WORKSPACE: '{{ .GITHUB_WORKSPACE | default "." }}'
+
+  vscode:from:
+    cmds:
+      - |
+        for file in {{ .GITHUB_WORKSPACE }}/.github/prompts/*.md; do
+          file_name=$(basename $file);
+          echo "Copying $file to .cwai/prompts/${file_name/.prompt.md/.md}";
+          cp $file .cwai/prompts/${file_name/.prompt.md/.md};
+        done
+    desc: "Sync .cwai/prompts from .github/prompts"
+    summary: |
+      Run example:
+        task vscode:to
+    vars:
+      GITHUB_WORKSPACE: '{{ .GITHUB_WORKSPACE | default "." }}'
+
   lint:
     cmds:
       - task: which

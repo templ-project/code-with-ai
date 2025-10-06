@@ -14,7 +14,7 @@ Variables:
 - `DOCUMENT_TYPE` — [OPTIONAL] Document type hint: `prd|gdd|hld|lld` (case‑insensitive) (.e.g. `--type hld`)
 - `FORMAT` — [OPTIONAL] Output format: `markdown` (default) or `json` (e.g. `--format markdown`)
 - `MAX_ITEMS` — [OPTIONAL] Default: 6 — Maximum number of top‑level items (e.g. `--max-items 12`)
-- `ARGUMENTS` — Additional flags or hints following the `/breakdown` prompt (e.g. `provide only epics, no other task types`)
+- `ARGUMENTS` — [OPTIONAL] Additional flags or hints following the `/breakdown` prompt (e.g. `provide only epics, no other task types`)
 
 ## Execution Process
 

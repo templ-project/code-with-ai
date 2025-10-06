@@ -18,7 +18,7 @@ Variables available to you:
 **Mandatory actions** → Given the implementation details provided as an argument, do this and follow all steps **exactly**:
 
 ```
-1. Read `.cwai/templates` folder content → pick $TEMPLATE(s) (e.g. game-design, high-level-design (hld), low-level-design (lld), product-requirements (prd)).
+1. Read `.cwai/templates/outline` folder content → pick $TEMPLATE(s) (e.g. game-design, high-level-design (hld), low-level-design (lld), product-requirement-document (prd)).
    - Save all that apply.
 
 2. Run `$SCRIPT --json --template $TEMPLATE... --labels $TEMPLATE,story "$ARGUMENTS"` (pass `$ARGUMENTS` **exactly** as given to you, do not summarize)
@@ -27,7 +27,7 @@ Variables available to you:
    - If this fails → stop and report: `ERROR: script_help_unavailable`.
 
 3. For each template TEMPLATE in `COPIED_TEMPLATES`:
-   - Follow the instructions in `.cwai/templates/$TEMPLATE.md` to produce a proper document.
+   - Follow the instructions in `.cwai/templates/outline/$TEMPLATE` to produce a proper document.
    - Overwrite `${FEATURE_FOLDER}/$TEMPLATE.md` (GitHub Markdown, no append).
 
 4. Clean the final doc of unnecessary sections (instructions, checklists, etc.) unless specified in the outline.

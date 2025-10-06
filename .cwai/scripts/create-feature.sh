@@ -44,14 +44,14 @@ Optional arguments:
   --json                  Output data as JSON instead of text
   --title <title>         Explicit title for the feature (auto-generated from requirement if not provided)
   --template|-t <name>    Template to copy (can be used multiple times)
-                          Available: raw-design (raw), high-level-design (hld), low-level-design (lld), game-design (game)
+                          Available: product-requirement-document (prd), high-level-design (hld), low-level-design (lld), game-design (game)
   --labels|-l <label>     Label to add to GitHub issue (comma separated)
                           Use -<label> to remove a label (e.g., -development)
 
 Examples:
     $0 "Users need to login securely" --template high-level-design --label authentication --label security
-    $0 "00012-user-authentication Add MFA support" --template low-level-design --label -development --json
-    $0 "Add user dashboard" --title "User Dashboard Feature" --template raw-design --template game-design
+  $0 "00012-user-authentication Add MFA support" --template low-level-design --label -development --json
+  $0 "Add user dashboard" --title "User Dashboard Feature" --template product-requirement-document --template game-design
 EOF
 }
 

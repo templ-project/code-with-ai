@@ -87,12 +87,6 @@ Alpha. Expect:
   - [Philosophy in Practice](#philosophy-in-practice)
   - [FAQ (Tiny \& Growing)](#faq-tiny--growing)
 - [Happy prompt‑driven building! 🚀](#happy-promptdriven-building-)
-  - [Steps](#steps)
-    - [`/outline`](#outline)
-    - [`/clarify`](#clarify)
-    - [`/breakdown`](#breakdown)
-    - [`/implement`](#implement)
-    - [Usage](#usage)
 
 ---
 
@@ -271,7 +265,7 @@ Errors (by design—silence would be worse):
 
 Use when: You’ve picked the next slice and want the AI to act like a careful pair, not a code firehose.
 
-Current placeholder: `implement.md` is intentionally empty. I want adoption patterns & feedback before cementing behavior. Ideas for its responsibilities:
+The `/implement` prompt is defined in `.cwai/prompts/implement.md` and guides stack rules, contracts, tests, and validation. Ideas for its responsibilities:
 
 - Accept one or more item IDs
 - Pull corresponding acceptance criteria & context from plan + originating spec
@@ -427,22 +421,3 @@ Not if you treat stages as revisit-able checkpoints, not gates.
 If any of this resonates—or annoys you productively—open an issue with a concrete example. That feedback loop is the whole point.
 
 # Happy prompt‑driven building! 🚀
-
-## Steps
-
-### `/outline`
-
-### `/clarify`
-
-### `/breakdown`
-
-### `/implement`
-
-Should split a Design Document into Stages ()
-
-### Usage
-
-- Start with `/outline` to define a design document
-- Use `/clarify` to better define the design document
-- Use `/breakdown` to split the design document into multiple tasks
-- Use `/implement` to code

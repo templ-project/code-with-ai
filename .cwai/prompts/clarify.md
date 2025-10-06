@@ -12,18 +12,18 @@ Variables available to you:
 
 - `DOCUMENT` - [MANDATORY] Path to a single spec file under `specs/xxxxx-yyyyy/document.md` (e.g. `specs/00001-generic-multi-purpose-config-module/high-level-design.md`)
 - `DOCUMENT_TYPE` - [OPTIONAL] Type of document provided for easier evaluation (e.g. `--type hld specs/00001-generic-multi-purpose-config-module/high-level-design.md`)
-- `CLARIFY_FOCUS` - Limits question domains (e.g. `--focus security,performance`)
-- `CLARIFY_ITEMS` - Limits the number of questions to be asked (.e.g `--max-items 5`) - default value: 5
-- `ARGUMENTS` - everything else that follows the `/clarify` prompt
+- `CLARIFY_FOCUS` - [OPTIONAL] Limits question domains (e.g. `--focus security,performance`)
+- `CLARIFY_ITEMS` - [OPTIONAL] Limits the number of questions to be asked (.e.g `--max-items 5`) - default value: 5
+- `ARGUMENTS` - [OPTIONAL] everything else that follows the `/clarify` prompt
 
 ## Supported Doc Type Heuristics
 
-| Type | Required Identifier (any match)                   | Primary Template File                             |
-| ---- | ------------------------------------------------- | ------------------------------------------------- |
-| PRD  | `Product Requirements Document` / `PRD ID`        | `.cwai/templates/product-requirement-document.md` |
-| HLD  | `High-Level Design (HLD)` / `Target Architecture` | `.cwai/templates/high-level-design.md`            |
-| LLD  | `Low-Level Design (LLD)` / `Module Descriptions`  | `.cwai/templates/low-level-design.md`             |
-| GDD  | `Game Design Document (GDD)` / `Core Loop`        | `.cwai/templates/game-design.md`                  |
+| Type | Required Identifier (any match)                   | Primary Template File                                     |
+| ---- | ------------------------------------------------- | --------------------------------------------------------- |
+| PRD  | `Product Requirements Document` / `PRD ID`        | `.cwai/templates/outline/product-requirement-document.md` |
+| HLD  | `High-Level Design (HLD)` / `Target Architecture` | `.cwai/templates/outline/high-level-design.md`            |
+| LLD  | `Low-Level Design (LLD)` / `Module Descriptions`  | `.cwai/templates/outline/low-level-design.md`             |
+| GDD  | `Game Design Document (GDD)` / `Core Loop`        | `.cwai/templates/outline/game-design.md`                  |
 
 If ambiguous (multiple heuristics) → determine a best fit for the document and act accordingly; analyze based on the $ARGUMENTS requirement.
 
@@ -38,8 +38,10 @@ If ambiguous (multiple heuristics) → determine a best fit for the document and
   e. Analyze document, understand it based on the `issue.json` requirements
   f. Analyze document, compare it with the original template.
   g. Prepare a list of unknowns; limit it to $CLARIFY_ITEMS most important ones
-3. Consolidate document based on questions asked to user (us the list of unknowns) and answers received by user
-4. Reformulate $DOCUMENT to include the clarifications and increase $DOCUMENT's version (overwrite or inline edit)
+
+2. Consolidate document based on questions asked to user (use the list of unknowns) and answers received by user
+
+3. Reformulate $DOCUMENT to include the clarifications and increase $DOCUMENT's version (overwrite or inline edit)
 ```
 
 ## Clarification Question Domains
