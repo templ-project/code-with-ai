@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 tasks:
   vscode:to:
@@ -10,7 +10,7 @@ tasks:
           echo "Copying $file to .github/prompts/${file_name/.md/.prompt.md}";
           cp $file {{ .GITHUB_WORKSPACE }}/.github/prompts/${file_name/.md/.prompt.md};
         done
-    desc: "Sync .github/prompts from .cwai/prompts"
+    desc: 'Sync .github/prompts from .cwai/prompts'
     summary: |
       Run example:
         task vscode:to
@@ -25,7 +25,7 @@ tasks:
           echo "Copying $file to .cwai/prompts/${file_name/.prompt.md/.md}";
           cp $file .cwai/prompts/${file_name/.prompt.md/.md};
         done
-    desc: "Sync .cwai/prompts from .github/prompts"
+    desc: 'Sync .cwai/prompts from .github/prompts'
     summary: |
       Run example:
         task vscode:to
@@ -37,7 +37,7 @@ tasks:
       - task: which
       - task: lint:bash
       - task: lint:markdown
-    desc: "Lint All Code"
+    desc: 'Lint All Code'
     summary: |
       Run example:
         task lint
@@ -58,7 +58,7 @@ tasks:
               printf '\033[0m'
             done
         echo "✅ Bash Linting Done."
-    desc: "Lint Bash"
+    desc: 'Lint Bash'
     silent: true
     summary: |
       Run example:
@@ -66,10 +66,10 @@ tasks:
 
   lint:markdown:
     cmds:
-      - npx prettier ./**/*.md --write
-      - npx eslint ./**/*.md --fix --stats --no-warn-ignored
+      - npx prettier "./**/*.md" --write
+      - npx eslint "./**/*.md" --fix --stats --no-warn-ignored
       - echo "✅ Markdown Linting Done."
-    desc: "Lint Markdown"
+    desc: 'Lint Markdown'
     summary: |
       Run example:
         task lint:markdown
@@ -79,5 +79,5 @@ tasks:
     cmds:
       - if ! command npx --version 2>&1 >/dev/null; then echo "npx commmand is not present; please install nodejs"; exit 1; fi
       - if ! command shellcheck --version 2>&1 >/dev/null; then echo "shellcheck commmand is not present; please install shellcheck"; exit 1; fi
-    desc: "Testing necessary commands exist"
+    desc: 'Testing necessary commands exist'
     silent: true

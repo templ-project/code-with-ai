@@ -1,4 +1,10 @@
-node_modules
-.env*
-specs
+# CwAI Related
 .github/prompts
+specs
+
+# Environment Files
+.env*
+!.env.example
+
+# Node.js related
+node_modules
