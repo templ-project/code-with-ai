@@ -1,5 +1,7 @@
 # Prevent multiple sourcing
-[[ -n "${_COMMON_SOURCED:-}" ]] && return 0
+if [[ -n "${_COMMON_SOURCED:-}" ]]; then
+  return 0
+fi
 readonly _COMMON_SOURCED=1
 
 #######################################
@@ -13,22 +15,23 @@ export CWAI_ISSUE_MANAGER=${CWAI_ISSUE_MANAGER:-localfs}
 load_environment() {
   local repo_root="$1"
 
-  # Prevent multiple loading
-  [[ -n "${_ENV_LOADED:-}" ]] && return 0
+  if [[ -n "${_ENV_LOADED:-}" ]]; then
+    return 0
+  fi
   readonly _ENV_LOADED=1
 
-  # Fail loudly if no repo root provided
-  [[ -z "$repo_root" ]] && {
+  if [[ -z "$repo_root" ]]; then
     echo "ERROR: Repository root path is required" >&2
     exit 1
-  }
+  fi
 
-  # Load .env first, then .env.local (local overrides global)
+  local env_file
   for env_file in "${repo_root}/.env" "${repo_root}/.env.local"; do
     if [[ -f "$env_file" ]]; then
       log_info "Loading environment from: $env_file"
       set -a
-      export $(grep -v '^#' "$env_file" | xargs)
+      # shellcheck source=/dev/null
+      source "$env_file"
       set +a
     fi
   done
@@ -47,7 +50,9 @@ readonly LOG_COLOR_RESET="\e[0m"
 readonly LOG_PREFIX="λ"
 
 log_debug() {
-  [[ -n "${DEBUG:-}" ]] && printf "${LOG_COLOR_BLUE}${LOG_PREFIX} DEBUG %s${LOG_COLOR_RESET}\n" "$1" >&2
+  if [[ -n "${DEBUG:-}" ]]; then
+    printf "${LOG_COLOR_BLUE}${LOG_PREFIX} DEBUG %s${LOG_COLOR_RESET}\n" "$1" >&2
+  fi
 }
 
 log_info() {
@@ -69,33 +74,39 @@ log_error() {
 
 join_by_comma() {
   local IFS=','
-  echo "$*"
+  printf '%s' "$*"
 }
 
 concatenate_arrays() {
   local array1_string="$1"
   local array2_string="$2"
 
-  # Declare associative arrays at the top
-  declare -A remove_set
-  declare -A seen_set
+  local -A remove_set=()
+  local -A seen_set=()
 
-  # Convert to arrays
-  IFS=',' read -r -a array1 <<<"$array1_string"
-  IFS=',' read -r -a array2 <<<"$array2_string"
+  local -a array1=()
+  local -a array2=()
 
-  # Build removal set
+  if [[ -n "$array1_string" ]]; then
+    IFS=',' read -r -a array1 <<<"$array1_string"
+  fi
+  if [[ -n "$array2_string" ]]; then
+    IFS=',' read -r -a array2 <<<"$array2_string"
+  fi
+
+  local item
   for item in "${array2[@]}"; do
-    if [[ "$item" == -* ]]; then
+    if [[ "$item" == -* && -n "${item#-}" ]]; then
       remove_set["${item#-}"]=1
     fi
   done
 
-  local outlist=()
+  local -a outlist=()
 
-  # Preserve order from array1 while respecting removals
   for item in "${array1[@]}"; do
-    [[ -z "$item" ]] && continue
+    if [[ -z "$item" ]]; then
+      continue
+    fi
     if [[ -n "${remove_set[$item]+x}" || -n "${seen_set[$item]+x}" ]]; then
       continue
     fi
@@ -103,18 +114,24 @@ concatenate_arrays() {
     outlist+=("$item")
   done
 
-  # Append new entries from array2 (excluding removals and negatives)
   for item in "${array2[@]}"; do
-    [[ -z "$item" ]] && continue
-    if [[ "$item" == -* || -n "${remove_set[$item]+x}" || -n "${seen_set[$item]+x}" ]]; then
+    if [[ -z "$item" || "$item" == -* ]]; then
+      continue
+    fi
+    if [[ -n "${remove_set[$item]+x}" || -n "${seen_set[$item]+x}" ]]; then
       continue
     fi
     seen_set["$item"]=1
     outlist+=("$item")
   done
 
-  IFS=','
-  echo "${outlist[*]}"
+  if [[ ${#outlist[@]} -eq 0 ]]; then
+    printf '%s\n' ""
+    return
+  fi
+
+  local IFS=','
+  printf '%s\n' "${outlist[*]}"
 }
 
 #######################################
@@ -123,9 +140,11 @@ concatenate_arrays() {
 
 split_by_comma() {
   local input="$1"
-  local arr
-  IFS=',' read -a arr <<<"$input"
-  echo "${arr[@]}"
+  local -a arr=()
+  if [[ -n "$input" ]]; then
+    IFS=',' read -r -a arr <<<"$input"
+  fi
+  printf '%s\n' "${arr[@]}"
 }
 
 # Get first 5 words from requirement as title
@@ -151,27 +170,33 @@ padd_feature_id() {
 # Find feature branch pattern in text, return if exists
 detect_feature_name() {
   local req="$1"
-  local feature_name
-  feature_name=$(echo "$req" | grep -oE '([0-9]{5}-[a-z0-9][a-z0-9-]*)' | head -n 1 || true)
+  local feature_name=""
+  feature_name=$(grep -oE '([0-9]{5}-[a-z0-9][a-z0-9-]*)' <<<"$req" | head -n 1 || true)
 
   if [[ -n "$feature_name" ]] && command -v git_branch_exists >/dev/null 2>&1; then
     if git_branch_exists "$feature_name"; then
-      echo "$feature_name"
+      printf '%s\n' "$feature_name"
       return 0
     fi
   fi
 
-  echo ""
+  printf '%s\n' ""
 }
 
 # Extract feature ID from string (00123-name -> 123)
 extract_feature_id() {
   local feature_name="$1"
-  local feature_id=$(echo "${feature_name}" | grep -o '^[0-9]\{5\}' || echo "0")
+  local feature_id="0"
 
-  feature_id=$(echo "$feature_id" | sed 's/^0*//')
+  if [[ "$feature_name" =~ ^([0-9]{5}) ]]; then
+    feature_id="${BASH_REMATCH[1]}"
+  fi
 
-  [ -n "$feature_id" ] && echo "$feature_id" || echo "0"
+  if [[ "$feature_id" =~ ^0+$ ]]; then
+    printf '%s\n' "0"
+  else
+    printf '%u\n' "$((10#$feature_id))"
+  fi
 }
 
 # Output JSON or key=value format
@@ -184,7 +209,7 @@ output_results() {
     return
   fi
 
-  echo "$json_result" |
+  printf '%s\n' "$json_result" |
     jq -r '
       to_entries[]
       | "\(.key)=\"\(
@@ -216,7 +241,7 @@ generate_hex_color() {
 
   # Fallback: use RANDOM variable if available
   if [[ -n "${RANDOM:-}" ]]; then
-    printf "%06X" $((RANDOM * RANDOM % 16777216))
+    printf "%06X" "$((RANDOM * RANDOM % 16777216))"
     return 0
   fi
 
@@ -302,23 +327,38 @@ localfs_create_issue() {
   local feature_body="$5"
   local feature_dir
 
-  if [ -n "${LOCALFS_FEATURE_ID:-}" ]; then
+  local feature_id
+  if [[ -n "${LOCALFS_FEATURE_ID:-}" ]]; then
     feature_id="$LOCALFS_FEATURE_ID"
   else
-    existing_count=$(ls "$CWAI_SPECS_FOLDER" 2>/dev/null | wc -l | tr -d ' ')
-    feature_id=$((existing_count + 1))
+    local existing_entries=()
+    if [[ -d "$CWAI_SPECS_FOLDER" ]]; then
+      while IFS= read -r -d '' entry; do
+        existing_entries+=("$entry")
+      done < <(find "$CWAI_SPECS_FOLDER" -mindepth 1 -maxdepth 1 -type d -print0)
+    fi
+    feature_id=$(( ${#existing_entries[@]} + 1 ))
   fi
-  feature_padded_id=$(padd_feature_id "$feature_id")
 
+  local feature_padded_id
+  feature_padded_id=$(padd_feature_id "$feature_id")
   feature_dir="$feature_parent_dir/$feature_padded_id-$feature_slug"
   mkdir -p "$feature_dir"
 
-  local now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  echo '{}' | jq \
-    --arg author "$(git config --get user.name) <$(git config --get user.email)>" \
+  local now
+  now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local author
+  author="$(git config --get user.name) <$(git config --get user.email)>"
+  local labels_json
+  labels_json=$(jq -Rn --arg labels "$feature_labels" '
+    if $labels == "" then [] else ($labels | split(",") | map(select(length > 0))) end
+  ')
+
+  jq -n \
+    --arg author "$author" \
     --arg title "$feature_title" \
     --arg description "$feature_body" \
-    --argjson labels "$(echo "$feature_labels" | jq -R 'split(",")')" \
+    --argjson labels "$labels_json" \
     --arg created_at "$now" \
     --arg updated_at "$now" \
     --argjson id "${feature_id:-0}" \
@@ -333,13 +373,12 @@ localfs_create_issue() {
       comments: []
     }' >"$feature_dir/issue.json"
 
-  # Validate issue creation succeeded
   if [[ -z "$feature_id" || "$feature_id" == "0" ]]; then
     log_error "Failed to create issue."
   fi
-  log_info "✅ Created Local issue (#$feature_id) $title"
+  log_info "✅ Created Local issue (#$feature_id) $feature_title"
 
-  echo $feature_id
+  printf '%s\n' "$feature_id"
 }
 
 localfs_update_issue() {
@@ -355,18 +394,20 @@ localfs_update_issue() {
 
   local now
   now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local author
+  author="$(git config --get user.name) <$(git config --get user.email)>"
+  local sanitized_comment
+  sanitized_comment="${feature_comment/$feature_name/}"
   local comment_json
-  comment_json=$(
-    echo '{}' | jq \
-      --arg author "$(git config --get user.name) <$(git config --get user.email)>" \
-      --arg comment "${feature_comment/$feature_name/}" \
-      --arg created_at "$now" \
-      '{
-        author: $author,
-        comment: $comment,
-        created_at: $created_at
-      }'
-  )
+  comment_json=$(jq -n \
+    --arg author "$author" \
+    --arg comment "$sanitized_comment" \
+    --arg created_at "$now" \
+    '{
+      author: $author,
+      comment: $comment,
+      created_at: $created_at
+    }')
 
   # Read existing labels from issue.json
   feature_existing_labels="$(jq -r '.labels // [] | join(",")' <"$feature_dir/issue.json")"
@@ -385,11 +426,9 @@ localfs_update_issue() {
     <"$feature_dir/issue.json" \
     >"$issue_temp_file"
 
-  cat "$issue_temp_file" >"$feature_dir/issue.json"
+  mv "$issue_temp_file" "$feature_dir/issue.json"
 
   log_info "💬 Updated Local issue (#$feature_id) $feature_name"
-
-  rm "$issue_temp_file"
 }
 
 #######################################
@@ -401,7 +440,7 @@ github_create_label() {
   local label_color="${2:-}"
   local label_description="${3:-}"
 
-  if [ -z "$label_color" ]; then
+  if [[ -z "$label_color" ]]; then
     label_color=$(generate_hex_color)
   fi
 
@@ -424,7 +463,6 @@ github_create_issue() {
   local feature_labels="$4"
   local feature_body="$5"
   local feature_id
-  local labels
   local gh_label_args=()
 
   # Ensure required labels exist
@@ -433,13 +471,16 @@ github_create_issue() {
 
   # Create any additional labels if needed and build label args
   if [[ -n "$feature_labels" ]]; then
-    OLD_IFS="$IFS"
-    IFS=','
-    for label in $feature_labels; do
+    local -a extra_labels=()
+    IFS=',' read -r -a extra_labels <<<"$feature_labels"
+    local label
+    for label in "${extra_labels[@]}"; do
+      if [[ -z "$label" ]]; then
+        continue
+      fi
       github_create_label "$label"
       gh_label_args+=(--label "$label")
     done
-    IFS="$OLD_IFS"
   fi
 
   gh_label_args+=(--label "task" --label "auto-generated")
@@ -461,18 +502,25 @@ github_update_issue() {
   local feature_labels="$4"
   local feature_comment="$5"
 
-  local issue_add_labels=()
-  local issue_remove_labels=()
+  local -a issue_add_labels=()
+  local -a issue_remove_labels=()
 
-  local labels=(${feature_labels//,/ })
-  for label in "${labels[@]}"; do
-    if [[ $label != -* ]]; then
-      issue_add_labels+=("$label")
-      github_create_label "$label"
-    else
-      issue_remove_labels+=("${label#-}")
-    fi
-  done
+  if [[ -n "$feature_labels" ]]; then
+    local -a labels=()
+    IFS=',' read -r -a labels <<<"$feature_labels"
+    local label
+    for label in "${labels[@]}"; do
+      if [[ -z "$label" ]]; then
+        continue
+      fi
+      if [[ "$label" != -* ]]; then
+        issue_add_labels+=("$label")
+        github_create_label "$label"
+      else
+        issue_remove_labels+=("${label#-}")
+      fi
+    done
+  fi
 
   if [[ ${#issue_add_labels[@]} -gt 0 ]]; then
     local add_labels_csv

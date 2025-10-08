@@ -13,7 +13,7 @@ enable=quote-safe-variables,check-unassigned-uppercase,require-variable-braces,c
 # SC1091: Can't follow non-constant source (sourced files with variables)
 # SC2155: Declare and assign separately (codebase uses combined declare/assign)
 # SC2015: Note that A && B || C is not if-then-else (used intentionally for concise logic)
-# SC2250: Preffer puting braces around variables even when not required
+# SC2250: Prefer puting braces around variables even when not required
 # SC2311: Bash implicitly disabled set -e for this function invocation because it's inside a command substitution. Add set -e; before it or enable inherit_errexit.
 # SC2310: This function is invoked in an 'if' condition so set -e will be disabled. Invoke separately if failures should cause the script to exit.
 # SC2312: Consider invoking this command separately to avoid masking its return value (or use '|| true' to ignore).
