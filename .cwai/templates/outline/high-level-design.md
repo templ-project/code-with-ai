@@ -1,4 +1,4 @@
-## Execution Flow (main)
+## Execution Flow (main) (remove at cleanup)
 
 ```
 1. Parse inputs (business brief, drivers, requirements, current state)
@@ -26,7 +26,7 @@
 
 ---
 
-## ⚡ Quick Guidelines
+## ⚡ Quick Guidelines (remove at cleanup)
 
 - ✅ HLD = **WHAT the solution looks like** and **WHY these choices**, not step-by-step build.
 - ❌ No low-level config, code, or vendor SKUs (leave for LLD/implementation).
@@ -39,11 +39,11 @@
 
 # High-Level Design (HLD): [SYSTEM / FEATURE NAME] [MANDATORY]
 
-**Design ID**: [HLD-###]  
-**Service / Domain**: [Service Name]  
-**Owner**: [Name / Role]  
-**Contributors**: [Names / Roles]  
-**Version**: [vX.Y] • **Date**: [YYYY-MM-DD] • **Status**: Draft  
+**Design ID**: [HLD-###]
+**Service / Domain**: [Service Name]
+**Owner**: [Name / Role]
+**Contributors**: [Names / Roles]
+**Version**: [vX.Y] • **Date**: [YYYY-MM-DD] • **Status**: Draft
 **Input**: Business brief / proposal link: [URL or "[NEEDS CLARIFICATION: missing]"]
 
 ## Document History [MANDATORY]
@@ -282,7 +282,7 @@ For major elements: frequency, type, responsibility, expected cost.
 
 ---
 
-## Review & Acceptance Checklist (Gate)
+## Review & Acceptance Checklist (Gate) (remove at cleanup)
 
 ### Content Quality]
 
