@@ -11,6 +11,7 @@ The user input is always available to you as raw text (even if `$ARGUMENTS` appe
 Variables available to you:
 
 - `DOCUMENT` - [MANDATORY] Path to a single spec file under `specs/xxxxx-yyyyy/document.md` (e.g. `specs/00001-generic-multi-purpose-config-module/high-level-design.md`)
+  - If missing, return: `ERROR: missing_document`
 - `DOCUMENT_TYPE` - [OPTIONAL] Type of document provided for easier evaluation (e.g. `--type hld specs/00001-generic-multi-purpose-config-module/high-level-design.md`)
 - `CLARIFY_FOCUS` - [OPTIONAL] Limits question domains (e.g. `--focus security,performance`)
 - `CLARIFY_ITEMS` - [OPTIONAL] Limits the number of questions to be asked (.e.g `--max-items 5`) - default value: 5
