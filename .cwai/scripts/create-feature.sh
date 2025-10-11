@@ -152,7 +152,7 @@ output_feature_results() {
     '{
       BRANCH_NAME: $branch,
       FEATURE_FOLDER: $dir,
-      feature_id: $id,
+      ISSUE_NUMBER: $id,
       TITLE: $feature_title,
       REQUIREMENT: $requirement,
       COPIED_TEMPLATES: (if $copied == "" then [] else ($copied | split(",") | map(select(length > 0))) end)
@@ -205,7 +205,7 @@ copy_templates() {
     fi
 
     if cp "$source_path" "$destination"; then
-      copied_files+=("$(basename "$destination")")
+      copied_files+=("$destination")
       log_info "📄 Copied template: $(basename "$source_path")"
     else
       log_warn "Failed to copy template '${trimmed_template}'"

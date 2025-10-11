@@ -8,7 +8,7 @@ Purpose: Given a design/spec document, produce a structured delivery plan broken
 
 ## Input Definition
 
-Variables:
+Variables available to you:
 
 - `DOCUMENT` — [MANDATORY] Path to spec file (e.g., `specs/00001-config-module/high-level-design.md`)
 - `DOCUMENT_TYPE` — [OPTIONAL] Document type hint: `prd|gdd|hld|lld` (case‑insensitive) (.e.g. `--type hld`)

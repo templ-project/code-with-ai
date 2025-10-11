@@ -44,7 +44,7 @@ All template file names in `TEMPLATE_PATH` are canonical sources; copies produce
 
 2. Invoke scaffold script (do not alter raw `ARGUMENTS`).
    - Command form (POSIX safe):
-     - `$SCRIPT --json --template "$TEMPLATE" --labels "$TEMPLATE","$TASK_TYPE" -- "$ARGUMENTS"`
+     - `$SCRIPT --json --template "$TEMPLATE" --labels "$TEMPLATE,$TASK_TYPE" "$ARGUMENTS"`
    - Must pass `--` before raw arguments to preserve leading dashes if present.
    - Expect JSON on stdout containing: `BRANCH_NAME`, `FEATURE_FOLDER`, `ISSUE_NUMBER`, `COPIED_TEMPLATES` (absolute paths). If any key missing → `ERROR: script_output_incomplete`.
    - If script exits non-zero or JSON parse fails → `ERROR: script_execution_failed`.
