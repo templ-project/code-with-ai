@@ -1,6 +1,5 @@
-
-
 - Print the project logo using ASCII
+
 ```
    _____            _   _____
   / ____|          | | |_   _|
@@ -14,15 +13,15 @@
 ```
 
 - Ask what AI Client the user wants to install CwAI for:
-   1. VSCode Copilot
-   2. Copilot CLI
-   3. Claude
-   4. Gemini
+  1.  VSCode Copilot
+  2.  Copilot CLI
+  3.  Claude
+  4.  Gemini
 - Read the answer in numerical form (1 to 5)
 - If AI Client supports multiple install paths:
   - ask user (only if multiple choices) how he wants to install CwAI:
-     1. Locally (in project)
-     2. Globally
+    1.  Locally (in project)
+    2.  Globally
   - read the answer in numerical form (1 or 2)
 - else, set the value yourself 1 for local, 2 for global
 - If install path is local
