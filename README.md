@@ -58,6 +58,13 @@ Alpha. Expect:
 - Evolving templates (PRD/HLD/LLD/GDD may tighten)
 - Missing automation (diagram helpers, test harness generation, etc.)
 
+### Important Disclaimer
+
+> [!WARNING]
+> **AI Behavior Variability:** We make no guarantees that these prompts will behave with 100% accuracy or consistency. AI models are inherently non-deterministic and unpredictable. The same prompt executed twice may produce different results, vary between AI providers (Copilot, Claude, Gemini), or change behavior across model versions. This variability is a fundamental characteristic of large language models, not a flaw in the prompts themselves.
+>
+> Use these prompts as **guidance and scaffolding**, not as deterministic tools. Always review, validate, and adjust AI output to fit your specific context and requirements.
+
 ### Table of Contents (because this grew fast)
 
 - [Code with AI (CwAI)](#code-with-ai-cwai)
@@ -65,10 +72,16 @@ Alpha. Expect:
     - [Influences \& Acknowledgements](#influences--acknowledgements)
     - [What This Is (and Isn’t)](#what-this-is-and-isnt)
     - [Current Status](#current-status)
+    - [Important Disclaimer](#important-disclaimer)
     - [Table of Contents (because this grew fast)](#table-of-contents-because-this-grew-fast)
   - [Quick Start](#quick-start)
   - [Installation Details](#installation-details)
+    - [Installation Scripts](#installation-scripts)
+      - [macOS/Linux Installation](#macoslinux-installation)
+      - [Windows/PowerShell Installation](#windowspowershell-installation)
     - [Requirements](#requirements)
+      - [For Bash (macOS/Linux)](#for-bash-macoslinux)
+      - [For PowerShell (Windows/Cross-platform)](#for-powershell-windowscross-platform)
   - [Configuration](#configuration)
   - [Core Workflow Overview](#core-workflow-overview)
   - [`/outline` – From Requirement Sentence to Structured Specs](#outline--from-requirement-sentence-to-structured-specs)
@@ -79,6 +92,8 @@ Alpha. Expect:
   - [Local vs GitHub Issue Manager](#local-vs-github-issue-manager)
   - [Conventions \& Guardrails](#conventions--guardrails)
   - [Development Aids](#development-aids)
+    - [Cross-Platform Script Support](#cross-platform-script-support)
+    - [Linting and Formatting](#linting-and-formatting)
   - [Typical End-to-End Session](#typical-end-to-end-session)
   - [Roadmap Ideas](#roadmap-ideas)
   - [Troubleshooting](#troubleshooting)
@@ -86,7 +101,6 @@ Alpha. Expect:
   - [Contributing](#contributing)
   - [Philosophy in Practice](#philosophy-in-practice)
   - [FAQ (Tiny \& Growing)](#faq-tiny--growing)
-- [Happy prompt‑driven building! 🚀](#happy-promptdriven-building-)
 
 ---
 
@@ -103,7 +117,10 @@ The project ships:
 
 - Reusable prompt definitions in `.cwai/prompts/`
 - Authoritative document templates in `.cwai/templates/outline/` and planning template `plan.md`
-- A feature scaffolding script: `.cwai/scripts/create-feature.sh`
+- Feature scaffolding scripts:
+  - **Bash**: `.cwai/scripts/create-feature.sh` with utilities in `common.sh`
+  - **PowerShell**: `.cwai/scripts/create-feature.ps1` with utilities in `common.ps1`
+  - **Documentation**: Plain English guides in `common.md` and `create-feature.md`
 - Local issue/spec storage (filesystem) with optional GitHub syncing
 
 ---
@@ -122,7 +139,14 @@ After install, your chosen AI tool (Copilot / Claude / Gemini) will have access 
 
 ## Installation Details
 
-The `install.sh` script will:
+### Installation Scripts
+
+The project provides installation scripts for multiple platforms:
+
+- **`install.sh`** - Bash script for macOS, Linux, and Unix-like systems
+- **`install.ps1`** - PowerShell script for Windows (also compatible with PowerShell Core on macOS/Linux)
+
+Both scripts provide the same interactive installation experience:
 
 1. Ask for target AI client: VSCode Copilot | Claude | Gemini
 2. Ask Local vs Global (if supported)
@@ -135,10 +159,30 @@ The `install.sh` script will:
    - Claude → `~/.config/claude/prompts/*.md` (or chosen path)
    - Gemini → `~/.config/gemini/templates/*.md`
 
+#### macOS/Linux Installation
+
+```bash
+./install.sh
+```
+
+#### Windows/PowerShell Installation
+
+```powershell
+.\install.ps1
+```
+
 ### Requirements
+
+#### For Bash (macOS/Linux)
 
 - Bash 4+
 - `git`, `jq`, `find`, `cp`, `mkdir`, `rm`
+- Optional (GitHub integration): `gh` CLI authenticated
+
+#### For PowerShell (Windows/Cross-platform)
+
+- PowerShell 5.1+ (Windows) or PowerShell Core 6+ (cross-platform)
+- Git
 - Optional (GitHub integration): `gh` CLI authenticated
 
 If you prefer manual install: just copy the entire `.cwai` folder into any repo and wire the prompts into your AI client (Copilot custom prompts, Claude custom library, etc.).
@@ -326,6 +370,20 @@ Core promises to yourself:
 
 ## Development Aids
 
+### Cross-Platform Script Support
+
+All core scripts are available in both Bash and PowerShell:
+
+| Script           | Bash                              | PowerShell                         | Documentation                     |
+| ---------------- | --------------------------------- | ---------------------------------- | --------------------------------- |
+| Installation     | `install.sh`                      | `install.ps1`                      | `src/install.md`                  |
+| Create Feature   | `.cwai/scripts/create-feature.sh` | `.cwai/scripts/create-feature.ps1` | `.cwai/scripts/create-feature.md` |
+| Common Utilities | `.cwai/scripts/common.sh`         | `.cwai/scripts/common.ps1`         | `.cwai/scripts/common.md`         |
+
+Both implementations maintain identical functionality and output formats.
+
+### Linting and Formatting
+
 Run linters (Bash + Markdown formatting):
 
 ```bash
@@ -420,4 +478,4 @@ Not if you treat stages as revisit-able checkpoints, not gates.
 
 If any of this resonates—or annoys you productively—open an issue with a concrete example. That feedback loop is the whole point.
 
-# Happy prompt‑driven building! 🚀
+Happy prompt‑driven building! 🚀
