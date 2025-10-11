@@ -2,6 +2,7 @@
 description: "Draft or refactor specifications from a natural language feature description"
 scripts:
   sh: .cwai/scripts/create-feature.sh
+  pwsh: .cwai/scripts/create-feature.ps1
 ---
 
 ## Input Definition
