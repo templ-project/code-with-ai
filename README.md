@@ -51,12 +51,20 @@ Alpha. Expect:
 - Evolving templates (PRD/HLD/LLD/GDD/Spec may tighten)
 - Missing automation (diagram helpers, test harness generation, etc.)
 
+### Important Disclaimer
+
+> [!WARNING]
+> **AI Behavior Variability:** We make no guarantees that these prompts will behave with 100% accuracy or consistency. AI models are inherently non-deterministic and unpredictable. The same prompt executed twice may produce different results, vary between AI providers (Copilot, Claude, Gemini), or change behavior across model versions. This variability is a fundamental characteristic of large language models, not a flaw in the prompts themselves.
+>
+> Use these prompts as **guidance and scaffolding**, not as deterministic tools. Always review, validate, and adjust AI output to fit your specific context and requirements.
+
 ### Table of Contents (because this grew fast)
 
 - [Code with AI (CwAI)](#code-with-ai-cwai)
   - [Why This Exists](#why-this-exists)
     - [What This Is (and Isn’t)](#what-this-is-and-isnt)
     - [Current Status](#current-status)
+    - [Important Disclaimer](#important-disclaimer)
     - [Table of Contents (because this grew fast)](#table-of-contents-because-this-grew-fast)
   - [Quick Start](#quick-start)
     - [macOS/Linux/WSL (Bash) Installation](#macoslinuxwsl-bash-installation)
@@ -119,6 +127,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing htt
 ### Usage
 
 After install, your chosen AI tool (Copilot / Claude / Gemini) will have access to the prompts (`/outline`, `/clarify`, `/breakdown`, `/implement`).
+
+#### macOS/Linux Installation
+
+```bash
+./install.sh
+```
+
+#### Windows/PowerShell Installation
+
+```powershell
+.\install.ps1
+```
 
 ### Requirements
 
