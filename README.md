@@ -70,6 +70,8 @@ Alpha. Expect:
     - [macOS/Linux/WSL (Bash) Installation](#macoslinuxwsl-bash-installation)
     - [Windows (PowerShell) Installation](#windows-powershell-installation)
     - [Usage](#usage)
+      - [macOS/Linux Installation](#macoslinux-installation)
+      - [Windows/PowerShell Installation](#windowspowershell-installation)
     - [Requirements](#requirements)
       - [For Bash (macOS/Linux)](#for-bash-macoslinux)
       - [For PowerShell (Windows/Cross-platform)](#for-powershell-windowscross-platform)
