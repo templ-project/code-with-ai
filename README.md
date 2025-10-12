@@ -111,24 +111,6 @@ The project ships:
 
 ## Quick Start
 
-### macOS/Linux/WSL (Bash) Installation
-
-```bash
-bash <(curl -sSL https://raw.githubusercontent.com/templ-project/code-with-ai/refs/heads/main/install.sh)
-```
-
-### Windows (PowerShell) Installation
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing https://raw.githubusercontent.com/templ-project/code-with-ai/refs/heads/main/install.ps1 | iex"
-```
-
-### Usage
-
-After install, your chosen AI tool (Copilot / Claude / Gemini) will have access to the prompts (`/outline`, `/clarify`, `/breakdown`, `/implement`).
-
-#### Installation
-
 ```bash
 # Using npm
 npm install templ-project/code-with-ai && cwai-install
@@ -142,6 +124,10 @@ uv tool install git+https://github.com/templ-project/code-with-ai.git && cwai-in
 # Using uvx (recommended)
 uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install
 ```
+
+### Usage
+
+After install, your chosen AI tool (Copilot / Claude / Gemini) will have access to the prompts (`/outline`, `/clarify`, `/breakdown`, `/implement`).
 
 ### Requirements
 
