@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""Wrapper script for cwai-install Python command."""
+
+import sys
+from pathlib import Path
+
+# Add src to path
+src_path = Path(__file__).parent.parent.parent / "src"
+sys.path.insert(0, str(src_path))
+
+from commands.install_py import main
+
+if __name__ == "__main__":
+    main()

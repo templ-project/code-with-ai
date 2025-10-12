@@ -70,6 +70,7 @@ Alpha. Expect:
     - [macOS/Linux/WSL (Bash) Installation](#macoslinuxwsl-bash-installation)
     - [Windows (PowerShell) Installation](#windows-powershell-installation)
     - [Usage](#usage)
+      - [Installation](#installation)
     - [Requirements](#requirements)
       - [For Bash (macOS/Linux)](#for-bash-macoslinux)
       - [For PowerShell (Windows/Cross-platform)](#for-powershell-windowscross-platform)
@@ -128,16 +129,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "iwr -UseBasicParsing htt
 
 After install, your chosen AI tool (Copilot / Claude / Gemini) will have access to the prompts (`/outline`, `/clarify`, `/breakdown`, `/implement`).
 
-#### macOS/Linux Installation
+#### Installation
 
 ```bash
-./install.sh
-```
+# Using npm
+npm install templ-project/code-with-ai && cwai-install
 
-#### Windows/PowerShell Installation
+# Using npx (recommended)
+npx github:templ-project/code-with-ai cwai-install
 
-```powershell
-.\install.ps1
+# Using uv
+uv tool install git+https://github.com/templ-project/code-with-ai.git && cwai-install
+
+# Using uvx (recommended)
+uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install-py
 ```
 
 ### Requirements

@@ -2,18 +2,36 @@
   "name": "code-with-ai",
   "version": "1.0.0",
   "main": "index.js",
+  "bin": {
+    "cwai-install": "./bin/js/cwai-install.js",
+    "cwai-create-feature": "./bin/js/cwai-create-feature.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/templ-project/code-with-ai.git"
+  },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Code with AI - CLI tools for AI-assisted development",
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "execa": "^9.5.0",
+    "fs-extra": "^11.2.0"
+  },
   "devDependencies": {
     "@templ-project/eslint": "^1.0.4",
     "@templ-project/prettier": "^1.0.3",
+    "eslint": "^9.11.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.6"
+    "lint-staged": "^16.1.6",
+    "prettier": "^3.3.3",
+    "vitest": "^2.1.4"
   },
   "type": "module"
 }
