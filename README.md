@@ -142,7 +142,7 @@ npx --yes --package=github:templ-project/code-with-ai cwai-install
 uv tool install git+https://github.com/templ-project/code-with-ai.git && cwai-install
 
 # Using uvx (recommended)
-uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install-py
+uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install
 ```
 
 ### Requirements
