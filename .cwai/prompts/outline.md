@@ -1,8 +1,8 @@
 ---
 description: "Draft or refactor specifications from a natural language feature description"
 scripts:
-  sh: .cwai/scripts/create-feature.sh
-  pwsh: .cwai/scripts/create-feature.ps1
+  node: npx --yes --package=github:templ-project/code-with-ai cwai-create-feature
+  python: uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-create-feature
 ---
 
 Purpose: Your job is to draft or refactor specifications documents from natural language feature descriptions

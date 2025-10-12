@@ -8,3 +8,13 @@ specs
 
 # Node.js related
 node_modules
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/

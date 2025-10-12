@@ -72,8 +72,6 @@ Alpha. Expect:
     - [Usage](#usage)
       - [Installation](#installation)
     - [Requirements](#requirements)
-      - [For Bash (macOS/Linux)](#for-bash-macoslinux)
-      - [For PowerShell (Windows/Cross-platform)](#for-powershell-windowscross-platform)
   - [Configuration](#configuration)
   - [Core Workflow Overview](#core-workflow-overview)
     - [`/outline` – From Requirement Sentence to Structured Specs](#outline--from-requirement-sentence-to-structured-specs)
@@ -148,16 +146,8 @@ uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install
 ### Requirements
 
 - Optional (GitHub integration): `gh` CLI authenticated
-
-#### For Bash (macOS/Linux)
-
-- Bash 4+
-- `git`, `jq`, `find`, `cp`, `mkdir`, `rm`
-
-#### For PowerShell (Windows/Cross-platform)
-
-- PowerShell 5.1+ (Windows) or PowerShell Core 6+ (cross-platform)
-- Git
+- [Node.js](https://nodejs.org/) (recommended) or
+- Python 3.11 or above and [uv](https://docs.astral.sh/uv/guides/tools/)
 
 ---
 
