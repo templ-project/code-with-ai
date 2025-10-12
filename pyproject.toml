@@ -13,6 +13,10 @@ dependencies = [
 authors = [{ name = "Code with AI Team" }]
 license = { text = "ISC" }
 
+[project.scripts]
+cwai-install = "bin.py.cwai_install:main"
+cwai-create-feature = "bin.py.cwai_create_feature:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=7.4.0", "black>=23.0.0", "ruff>=0.1.0"]
 
