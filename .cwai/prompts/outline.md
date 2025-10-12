@@ -11,7 +11,7 @@ Purpose: Your job is to draft or refactor specifications documents from natural 
 
 Variables available to you:
 
-- `SCRIPT` – [DETECTABLE] Resolved from front‑matter `scripts` map. Use the first executable path (key `sh`) unless otherwise specified.
+- `SCRIPT` – [DETECTABLE] Resolved from front‑matter `scripts` map. Use the first executable command (key `node`) unless otherwise specified.
   - Detect Shell and then read script to familiarize yourself with the arguments (they differ based on shell type Bash+Zsh vs Pwsh)
 - `DOCUMENT_TYPE` – [OPTIONAL] User hint: one of `prd|gdd|hld|lld|spec` (case-insensitive) (e.g. `--type hld`).
   - If not mentioned, use heuristic detection on `ARGUMENTS` based on [Heuristics (Inference Aids)] section of this document and your experience

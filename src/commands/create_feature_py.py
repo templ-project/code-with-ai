@@ -47,13 +47,8 @@ async def create_feature_command_async(
     if not requirement:
         log_error("Requirement is required. Provide the requirement as arguments.")
 
-    specs_folder = os.environ.get("CWAI_SPECS_FOLDER")
-    issue_manager_type = os.environ.get("CWAI_ISSUE_MANAGER")
-
-    if not specs_folder:
-        log_error("Environment variable CWAI_SPECS_FOLDER is required")
-    if not issue_manager_type:
-        log_error("Environment variable CWAI_ISSUE_MANAGER is required")
+    specs_folder = os.environ.get("CWAI_SPECS_FOLDER", "specs")
+    issue_manager_type = os.environ.get("CWAI_ISSUE_MANAGER", "localfs")
 
     # Detect if this is an existing feature or new
     feature_name = detect_feature_name(requirement)
