@@ -1,4 +1,4 @@
-# Language/Stack Rules for AI Code Generation
+# Language/Stack Rules for Code Generation
 
 Use this file as the canonical ruleset. Follow Global Rules first, then apply the selected Language Rules. Prefer clarity over cleverness and keep outputs runnable, testable, and secure.
 
@@ -7,7 +7,7 @@ Use this file as the canonical ruleset. Follow Global Rules first, then apply th
 - Code quality: prioritize readability, small functions, single responsibility; adopt ecosystem-standard formatters/linters (e.g., Prettier, Black, gofmt).
 - **Instrumentation (mandatory)**: Even when Stack has its proprietary instrumentation, make use of [Taskfile](https://github.com/go-task/task) to write complex tasks that will permit developer to automate tasks.
 - **Project Template Enforcement (mandatory)**: If an official template exists for the selected stack, you MUST scaffold from it. Do not bypass or re-create structure ad hoc.
-  - Use `git clone --depth 1 <repo-url> <target-folder> &&  rm -rf <target-folder>/.git` or addapt it based on project structure.
+  - Use the command mentioned for the stack to scaffold the project.
 - CI/CD: default to deterministic builds; pin dependencies where practical.
 - Docs: include a short README or usage notes when creating new runnable code; document code when necessary, explain complicated code sections
 - Errors: return explicit errors; avoid silent failures; include context in messages; make use of error codes.
@@ -49,6 +49,8 @@ Use this file as the canonical ruleset. Follow Global Rules first, then apply th
 
 ## C++
 
+- Scaffold: `uvx --from git+https://github.com/templ-project/cpp.git bootstrap $CODE_FOLDER` (use only for new projects)
+  - Run the command above, inspect the scaffolded code and remove unnecessary files.
 - Code Quality: `clang` tools
 - Concurrency: std::thread/atomic; avoid data races.
 - Project Template: [templ-project/cpp](https://github.com/templ-project/cpp)
@@ -89,12 +91,13 @@ Use this file as the canonical ruleset. Follow Global Rules first, then apply th
 
 ### JavaScript (K6)
 
+- Scaffold: `npx --yes --package=github:templ-project/javascript bootstrap $CODE_FOLDER` (use only for new projects)
+  - Run the command above, inspect the scaffolded code and remove unnecessary files.
 - Runtime: K6 (ES6 subset); avoid Node APIs.
 - Testing: Vitest/Jest; mock K6 as needed.
 
 ### JavaScript (Node.js)
 
-- Project Template: [templ-project/javascript](https://github.com/templ-project/javascript)
 - Runtime: Node 22 or above, with ESM by default; const/let only.
 
 ### JavaScript (Deno)
@@ -148,6 +151,8 @@ Use this file as the canonical ruleset. Follow Global Rules first, then apply th
 
 ## TypeScript
 
+- Scaffold: `npx --yes --package=github:templ-project/typescript bootstrap $CODE_FOLDER` (use only for new projects)
+  - Run the command above, inspect the scaffolded code and remove unnecessary files.
 - Style: [Google TypeScript Style](https://google.github.io/styleguide/tsguide.html); ESLint + Prettier.
 - Testing: Vitest (new) or Jest (existing).
 
