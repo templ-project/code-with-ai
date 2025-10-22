@@ -8,9 +8,9 @@ Purpose: Purpose of the Prompt
 
 Variables available to you:
 
+- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/outline` (stripped by the rest of variables (`VARIABLE=value`) mentioned bellow).
+  - If missing, return: `ERROR: input_unavailable` and describe the prompt (feel free to give an example as well)
 - ...
-- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/outline`.
-  - If missing, return: `ERROR: input_unavailable`
 
 ## Execution Flow
 

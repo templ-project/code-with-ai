@@ -1,8 +1,5 @@
 ---
 description: "Draft or refactor specifications from a natural language feature description"
-scripts:
-  node: npx --yes --package=github:templ-project/code-with-ai cwai-create-feature
-  python: uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-create-feature
 ---
 
 Purpose: Your job is to draft or refactor specifications documents from natural language feature descriptions
@@ -11,21 +8,25 @@ Purpose: Your job is to draft or refactor specifications documents from natural 
 
 Variables available to you:
 
-- `SCRIPT` – [DETECTABLE] Resolved from front‑matter `scripts` map. Use the first executable command (key `node`) unless otherwise specified.
-  - Detect Shell and then read script to familiarize yourself with the arguments (they differ based on shell type Bash+Zsh vs Pwsh)
-- `DOCUMENT_TYPE` – [OPTIONAL] User hint: one of `prd|gdd|hld|lld|spec` (case-insensitive) (e.g. `--type hld`).
-  - If not mentioned, use heuristic detection on `ARGUMENTS` based on [Heuristics (Inference Aids)] section of this document and your experience
-  - If unclear, return: `ERROR: document_type_ambiguous`
+- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/outline` (stripped by the rest of variables (e.g. `DOCUMENT_TYPE=hld`) mentioned bellow).
+  - If missing, return: `ERROR: input_unavailable` and describe the prompt (feel free to give an example as well)
+
+- `SCRIPT` – [DETECTABLE] Value looked up from the [Feature Create Script] section (column SCRIPT) based on `SCRIPT_RUNNER` value.
 - `TEMPLATE` – [DETECTABLE] Value looked up from the [Document Type Mapping] section (column TEMPLATE) based on `DOCUMENT_TYPE`.
 - `TASK_TYPE` – [DETECTABLE] Value looked up from the [Document Type Mapping] section (column TASK_TYPE) based on `DOCUMENT_TYPE`.
+
+- `SCRIPT_RUNNER` - [OPTIONAL] Default: `npx`. User hint: one of `npx|uvx` (case-insensitive) (e.g. `SCRIPT_RUNNER=uvx`).
+  - If unclear, return: `ERROR: script_runner_invalid`
+- `DOCUMENT_TYPE` – [OPTIONAL] User hint: one of `prd|gdd|hld|lld|spec` (case-insensitive) (e.g. `DOCUMENT_TYPE=hld`).
+  - If not mentioned, use heuristic detection on `ARGUMENTS` based on [Heuristics (Inference Aids)] section of this document and your experience
+  - If unclear, return: `ERROR: document_type_ambiguous`
 - `CODE_STACK` – [OPTIONAL] Default: `typescript,node`. Only applied when `DOCUMENT_TYPE=lld` to tailor Low Level Design content (e.g. `--stack c++,xmake`).
-- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/outline` (remove the other `--` marked inputs).
-  - If missing, return: `ERROR: input_unavailable`
 
 ## Execution Flow
 
 **Mandatory actions** → Given the feature description (`ARGUMENTS`), follow these steps **exactly**:
 
+```
 1. Resolve `DOCUMENT_TYPE`.
    - If user explicitly supplied one (flag, keyword, or direct mention), normalize to lowercase and validate against mapping.
    - Otherwise infer via heuristics (see Heuristics section). If multiple match → report `ERROR: document_type_ambiguous` and stop.
@@ -60,12 +61,14 @@ Variables available to you:
    - `documents`: array of objects `{ file, type, taskType }`
    - `ready`: boolean (true when all steps succeeded)
    - `next_action_hint`: short string (e.g., `review_and_create_pr`)
+```
 
 If any step fails, emit only an error line: `ERROR: <error_code>` and no partial documents.
 
 ## Error Codes
 
 - `ERROR: input_unavailable` – Missing or empty `ARGUMENTS`.
+- `ERROR: script_runner_invalid` - Invalid Script Runner - can only be `npx` or `uvx`.
 - `ERROR: document_type_ambiguous` – Multiple candidate types with equal weight.
 - `ERROR: script_execution_failed` – Script failed (non-zero or stderr-critical) or JSON invalid.
 - `ERROR: script_output_incomplete` – JSON missing required keys.
@@ -90,6 +93,13 @@ Only this JSON (inside a fenced block) plus any human-readable preface is allowe
 - [ ] Script output is a valid JSON
 - [ ] Design Document has been generated and filled in
 - [ ] Design Document has been cleaned of unnecessary sections
+
+## Feature Create Script
+
+| SCRIPT_RUNNER | SCRIPT                                                                               |
+| ------------- | ------------------------------------------------------------------------------------ |
+| npx           | npx --yes --package=github:templ-project/code-with-ai cwai-create-feature            |
+| uvx           | uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-create-feature |
 
 ## Document Type Mapping
 
