@@ -33,30 +33,32 @@ Variables available to you:
    - If no match → default: `DOCUMENT_TYPE=spec`.
    - Derive `TEMPLATE` and `TASK_TYPE` from the mapping row.
 
-2. Invoke scaffold script (do not alter raw `ARGUMENTS`).
+2. Summarize your role and requirement (max 100 wors).
+
+3. Invoke scaffold script (do not alter raw `ARGUMENTS`).
    - Command form (POSIX safe):
      - `$SCRIPT --json --template "$TEMPLATE" --labels "$TEMPLATE,$TASK_TYPE" "$ARGUMENTS"`
    - Expect JSON on stdout containing: `BRANCH_NAME`, `FEATURE_FOLDER`, `ISSUE_NUMBER`, `COPIED_TEMPLATES` (absolute paths). If any key missing → `ERROR: script_output_incomplete`.
    - If script exits non-zero or JSON parse fails → `ERROR: script_execution_failed`.
 
-3. Validate template sources.
+4. Validate template sources.
    - `COPIED_TEMPLATES` should be a non-empty array of absolute file paths under the feature folder.
    - For each copied template path `P`, derive base filename `T = basename(P)` (without extension normalization; expect `.md`).
    - Confirm source canonical template exists at `.cwai/templates/outline/$T` (if missing → `ERROR: template_not_found`).
 
-4. Generate each document.
+5. Generate each document.
    - Read canonical template instructions from `.cwai/templates/outline/$T`.
    - Produce a finalized GitHub Markdown document tailored to `ARGUMENTS`, `DOCUMENT_TYPE`, and when `DOCUMENT_TYPE=lld` also incorporate `CODE_STACK` specifics (e.g., code architecture, module boundaries, interfaces in the given stack).
    - Overwrite `${FEATURE_FOLDER}/$T` (no append, UTF-8, ensure trailing newline).
    - MUST remove instructional scaffolding comments unless explicitly required for context.
 
-5. Post-process / cleanup.
+6. Post-process / cleanup.
    - Remove empty placeholder headings (heading followed immediately by another heading or EOF).
    - Normalize heading levels so there is exactly one H1 at top (document title) unless original template mandates otherwise.
    - Ensure lists use consistent marker (`-`).
    - Collapse >2 consecutive blank lines to a single blank line.
 
-6. Output completion report (structured JSON fenced in Markdown for downstream tooling) containing:
+7. Output completion report (structured JSON fenced in Markdown for downstream tooling) containing:
    - `branch`: value of `BRANCH_NAME`
    - `documents`: array of objects `{ file, type, taskType }`
    - `ready`: boolean (true when all steps succeeded)
