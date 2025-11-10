@@ -8,20 +8,22 @@ Purpose: Purpose of the Prompt
 
 Variables available to you:
 
+- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/command` (stripped by the rest of variables (`VARIABLE=value`) mentioned bellow).
+  - If missing, return: `ERROR: input_unavailable` and describe the prompt (feel free to give an example as well)
 - ...
-- `ARGUMENTS` – [MANDATORY] The raw feature description text supplied after `/outline`.
-  - If missing, return: `ERROR: input_unavailable`
 
 ## Execution Flow
 
 ```text
-1. Instruction 1
+1. Summarize your role and requirement (max 100 wors).
+
+2. Instruction 1
    - Sub-instruction 1.1
    - Sub-instruction 1.2
    - Sub-instruction 1.3
    - Sub-instruction 1.4
 
-2. Instruction 2
+3. Instruction 2
    - Sub-instruction 2.1
    - Sub-instruction 2.2
    - Sub-instruction 2.3
