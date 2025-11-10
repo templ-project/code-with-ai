@@ -111,23 +111,27 @@ The project ships:
 
 ## Quick Start
 
+Using npm
+
 ```bash
-# Using npm
 npm install templ-project/code-with-ai && cwai-install
 ```
 
+Using npx (recommended - installs package then runs command)
+
 ```bash
-# Using npx (recommended - installs package then runs command)
 npx --yes --package=github:templ-project/code-with-ai cwai-install
 ```
 
+Using uv
+
 ```bash
-# Using uv
 uv tool install git+https://github.com/templ-project/code-with-ai.git && cwai-install
 ```
 
+Using uvx (recommended)
+
 ```bash
-# Using uvx (recommended)
 uvx --from git+https://github.com/templ-project/code-with-ai.git cwai-install
 ```
 
