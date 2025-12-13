@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch: {}
+
+jobs:
+  test-scaffold-uvx:
+    name: Test Scaffold (uvx)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Test cwai-create-feature --help
+        run: uvx --from . cwai-create-feature --help
+
+      - name: Test cwai-create-feature execution
+        env:
+          CWAI_SPECS_FOLDER: specs
+          CWAI_ISSUE_MANAGER: localfs
+        run: uvx --from . cwai-create-feature "Test feature for CI" --json
+
+      - name: Test cwai-create-feature (remote)
+        env:
+          CWAI_SPECS_FOLDER: specs
+          CWAI_ISSUE_MANAGER: localfs
+        run: uvx --from git+${{ github.server_url }}/${{ github.repository }}.git cwai-create-feature "Test remote feature" --json
+
+  test-scaffold-npx:
+    name: Test Scaffold (npx)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test cwai-create-feature --help
+        run: npx . cwai-create-feature --help
+
+      - name: Test cwai-create-feature execution
+        env:
+          CWAI_SPECS_FOLDER: specs
+          CWAI_ISSUE_MANAGER: localfs
+        run: npx . cwai-create-feature "Test feature for CI" --json
+
+      - name: Test cwai-create-feature (remote)
+        env:
+          CWAI_SPECS_FOLDER: specs
+          CWAI_ISSUE_MANAGER: localfs
+        run: npx --yes --package=github:${{ github.repository }} cwai-create-feature "Test remote feature" --json

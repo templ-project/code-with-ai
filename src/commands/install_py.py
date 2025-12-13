@@ -13,6 +13,7 @@ from rich.console import Console
 
 import sys
 from pathlib import Path
+
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -69,6 +70,7 @@ def install_command():
             questionary.Choice("VSCode Copilot", value="vscode"),
             questionary.Choice("Claude", value="claude"),
             questionary.Choice("Gemini", value="gemini"),
+            questionary.Choice("OpenCode", value="opencode"),
         ],
     ).ask()
 
@@ -143,6 +145,8 @@ def install_command():
         console.print(f"  Prompts: {target_path / 'prompts/*.md'}")
     elif selected_ai_client == "gemini":
         console.print(f"  Templates: {target_path / 'templates/*.md'}")
+    elif selected_ai_client == "opencode":
+        console.print(f"  Commands: {target_path / '.opencode/command/*.md'}")
 
     console.print(
         f"\nYou can now start using CwAI with your {get_client_display_name(selected_ai_client)}!"
@@ -155,6 +159,7 @@ def get_client_display_name(client: str) -> str:
         "vscode": "VSCode Copilot",
         "claude": "Claude",
         "gemini": "Gemini",
+        "opencode": "OpenCode",
     }
     return display_names.get(client, client)
 
@@ -171,6 +176,8 @@ def get_global_install_path(client: str) -> Path:
         return home / ".config/claude"
     elif client == "gemini":
         return home / ".config/gemini"
+    elif client == "opencode":
+        return home / ".config/opencode"
 
     log_error(f"Unknown AI client: {client}")
 
@@ -192,6 +199,10 @@ def check_existing_installation(target_path: Path, selected_ai_client: str) -> N
         templates_path = target_path / "templates"
         if templates_path.exists():
             existing_paths.append(templates_path)
+    elif selected_ai_client == "opencode":
+        command_path = target_path / ".opencode/command"
+        if command_path.exists():
+            existing_paths.append(command_path)
 
     # Check for .cwai folder
     cwai_path = target_path / ".cwai"
@@ -237,6 +248,8 @@ def install_prompts(cwai_source_dir: Path, target_path: Path, selected_ai_client
         install_claude_prompts(src_prompts_dir, target_path)
     elif selected_ai_client == "gemini":
         install_gemini_prompts(src_prompts_dir, target_path)
+    elif selected_ai_client == "opencode":
+        install_opencode_prompts(src_prompts_dir, target_path)
 
     log_success(f"Prompts installed successfully for {get_client_display_name(selected_ai_client)}")
 
@@ -272,6 +285,19 @@ def install_gemini_prompts(src_prompts_dir: Path, target_path: Path) -> None:
     """Install Gemini prompts."""
     dest_dir = target_path / "templates"
     log_info(f"Installing Gemini prompts to {dest_dir}")
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    for file in src_prompts_dir.glob("*.md"):
+        dest_file = dest_dir / file.name
+        shutil.copy2(file, dest_file)
+        log_info(f"Installed: {file.name}")
+
+
+def install_opencode_prompts(src_prompts_dir: Path, target_path: Path) -> None:
+    """Install OpenCode commands."""
+    dest_dir = target_path / ".opencode/command"
+    log_info(f"Installing OpenCode commands to {dest_dir}")
 
     dest_dir.mkdir(parents=True, exist_ok=True)
 

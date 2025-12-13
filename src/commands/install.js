@@ -50,7 +50,8 @@ export async function installCommand() {
     choices: [
       { name: 'VSCode Copilot', value: 'vscode' },
       { name: 'Claude', value: 'claude' },
-      { name: 'Gemini', value: 'gemini' }
+      { name: 'Gemini', value: 'gemini' },
+      { name: 'OpenCode', value: 'opencode' }
     ]
   });
 
@@ -124,6 +125,8 @@ export async function installCommand() {
     console.log(`  Prompts: ${path.join(targetPath, 'prompts/*.md')}`);
   } else if (selectedAiClient === 'gemini') {
     console.log(`  Templates: ${path.join(targetPath, 'templates/*.md')}`);
+  } else if (selectedAiClient === 'opencode') {
+    console.log(`  Commands: ${path.join(targetPath, '.opencode/command/*.md')}`);
   }
 
   console.log(`\nYou can now start using CwAI with your ${getClientDisplayName(selectedAiClient)}!`);
@@ -133,7 +136,8 @@ function getClientDisplayName(client) {
   const map = {
     vscode: 'VSCode Copilot',
     claude: 'Claude',
-    gemini: 'Gemini'
+    gemini: 'Gemini',
+    opencode: 'OpenCode'
   };
   return map[client] || client;
 }
@@ -150,6 +154,8 @@ function getGlobalInstallPath(client) {
     return path.join(home, '.config/claude');
   } else if (client === 'gemini') {
     return path.join(home, '.config/gemini');
+  } else if (client === 'opencode') {
+    return path.join(home, '.config/opencode');
   }
   
   logError(`Unknown AI client: ${client}`);
@@ -173,6 +179,11 @@ async function checkExistingInstallation(targetPath, selectedAiClient) {
     const templatesPath = path.join(targetPath, 'templates');
     if (await fs.pathExists(templatesPath)) {
       existingPaths.push(templatesPath);
+    }
+  } else if (selectedAiClient === 'opencode') {
+    const commandPath = path.join(targetPath, '.opencode/command');
+    if (await fs.pathExists(commandPath)) {
+      existingPaths.push(commandPath);
     }
   }
 
@@ -221,6 +232,8 @@ async function installPrompts(cwaiSourceDir, targetPath, selectedAiClient) {
     await installClaudePrompts(srcPromptsDir, targetPath);
   } else if (selectedAiClient === 'gemini') {
     await installGeminiPrompts(srcPromptsDir, targetPath);
+  } else if (selectedAiClient === 'opencode') {
+    await installOpencodePrompts(srcPromptsDir, targetPath);
   }
 
   logSuccess(`Prompts installed successfully for ${getClientDisplayName(selectedAiClient)}`);
@@ -266,6 +279,24 @@ async function installClaudePrompts(srcPromptsDir, targetPath) {
 async function installGeminiPrompts(srcPromptsDir, targetPath) {
   const destDir = path.join(targetPath, 'templates');
   logInfo(`Installing Gemini prompts to ${destDir}`);
+
+  await fs.ensureDir(destDir);
+
+  const files = await fs.readdir(srcPromptsDir);
+  for (const file of files) {
+    if (file.endsWith('.md')) {
+      const srcFile = path.join(srcPromptsDir, file);
+      const destFile = path.join(destDir, file);
+
+      await fs.copy(srcFile, destFile);
+      logInfo(`Installed: ${file}`);
+    }
+  }
+}
+
+async function installOpencodePrompts(srcPromptsDir, targetPath) {
+  const destDir = path.join(targetPath, '.opencode/command');
+  logInfo(`Installing OpenCode commands to ${destDir}`);
 
   await fs.ensureDir(destDir);
 
