@@ -48,16 +48,16 @@ jobs:
         run: npm ci
 
       - name: Test cwai-create-feature --help
-        run: npx . cwai-create-feature --help
+        run: node ./bin/js/cwai-create-feature.js --help
 
       - name: Test cwai-create-feature execution
         env:
           CWAI_SPECS_FOLDER: specs
           CWAI_ISSUE_MANAGER: localfs
-        run: npx . cwai-create-feature "Test feature for CI" --json
+        run: node ./bin/js/cwai-create-feature.js "Test feature for CI" --json
 
       - name: Test cwai-create-feature (remote)
         env:
           CWAI_SPECS_FOLDER: specs
           CWAI_ISSUE_MANAGER: localfs
-        run: npx --yes --package=github:${{ github.repository }} cwai-create-feature "Test remote feature" --json
+        run: npx --yes -p git+${{ github.server_url }}/${{ github.repository }}.git cwai-create-feature "Test remote feature" --json
